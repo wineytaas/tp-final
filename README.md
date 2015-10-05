@@ -23,10 +23,10 @@ Independentemente do sistema que você decidir implementar, o mesmo deverá cont
 O sistema deverá ser entregue a apresentado nas datas presentes no início da descrição.
 
 O sistema deverá ser entregue da seguinte forma:
-* Um repositório no git com a parte de back-end
-  * O repositório deverá ter um documento descrevendo o setup e API do projeto.
-* Um repositório no git com a parte de front-end
-  * O repositório deverá ter um documento descrevendo o resumo e setup do projeto.
+* Uma pasta no repositório com a parte de back-end
+  * A pasta deverá ter um documento descrevendo o setup e API do projeto.
+* Uma pasta no repositório com a parte de front-end
+  * A pasta deverá ter um documento descrevendo o setup do projeto.
 
 **OBS: Não se esqueça de descrever no repositório o nome dos integrantes**
 
