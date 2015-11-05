@@ -19,8 +19,8 @@ $app->get('/alunos/:id', function ($id) {
 
 $app->get('/alunos', function() {
     // recupera todos os clientes
-    $usuarios = UsuarioDAO::getAll();
-    echo json_encode($usuarios);
+    $alunos = AlunoDao::getAll();
+    echo json_encode($alunos);
 });
 
 $app->post('/usuarios', function() {
