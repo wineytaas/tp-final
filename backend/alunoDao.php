@@ -38,7 +38,7 @@ class AlunoDAO {
             $ar->result = false;
         }else{
             $ar->result = true;
-            $ar->aluno = $aluno;
+            $ar->user = $aluno;
         } 
         return $ar;
     }

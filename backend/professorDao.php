@@ -38,7 +38,7 @@ class ProfessorDAO {
             $ar->result = false;
         } else {
             $ar->result = true;
-            $ar->professor = $professor;
+            $ar->user = $professor;
         }
         return $ar;
     }
