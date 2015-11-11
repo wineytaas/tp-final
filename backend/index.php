@@ -11,7 +11,14 @@ $app = new \Slim\Slim();
 $app->response()->header('Content-Type', 'application/json;charset=utf-8');
 
 
-
+$app->post('/login', function() {
+    
+    $request = \Slim\Slim::getInstance()->request();
+    // recupera todos os clientes
+    $user = json_decode($request->getBody());
+    if($user->tipo == "alunos") echo json_encode(AlunoDAO::getAlunoByLogin($user->login,$user->senha));
+    if($user->tipo == "professores") echo json_encode(ProfessorDAO::getProfessorByLogin($user->login,$user->senha));
+});
 
 //-------------------------------------  PROPRIEDADES DO ALUNO  -------------------------------------
 $app->get('/alunos', function() {
