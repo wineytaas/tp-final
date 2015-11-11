@@ -1,6 +1,6 @@
 <?php
 
-class AlunoDao {
+class AlunoDAO {
 
     public static function getAlunoById($id) {
         $connection = Connection::getConnection();
@@ -14,6 +14,23 @@ class AlunoDao {
 //        $categoria->usuario = mysqli_fetch_object($result);
 
         return $aluno;
+    }
+    
+    public static function getAlunoByLogin($login, $senha) {
+        $connection = Connection::getConnection();
+        $sql = "SELECT * FROM as_aluno WHERE login = '$login' AND senha = '$senha'";
+        $result = mysqli_query($connection, $sql);
+        $aluno = mysqli_fetch_object($result);
+        
+        $numrows = mysqli_num_rows($result);
+        $ar = new stdClass();
+        if ($numrows == 0) {
+            $ar->result = false;
+        }else{
+            $ar->result = true;
+            $ar->aluno = $aluno;
+        } 
+        return $ar;
     }
 
     public static function getAll() {
@@ -31,18 +48,18 @@ class AlunoDao {
         return $alunos;
     }
 
-    public static function updateCategoria($categoria, $id) {
+    public static function updateAluno($aluno, $id) {
         $connection = Connection::getConnection();
-        $sql = "UPDATE toDoList_categorias SET nome='$categoria->nome', usuario_id='$categoria->usuario_id' WHERE id=$id";
+        $sql = "UPDATE as_aluno SET nome='$aluno->nome' ,rg='$aluno->rg' ,cpf='$aluno->cpf' ,logradouro='$aluno->logradouro' ,numero='$aluno->numero' ,bairro='$aluno->bairro' ,cidade='$aluno->cidade' ,cep='$aluno->cep' ,parcelaspagas='$aluno->parcelaspagas' ,parcelastotais='$aluno->parcelastotais' ,valortotal='$aluno->valortotal',login='$aluno->login',senha='$aluno->senha' WHERE id = $id";
         $result = mysqli_query($connection, $sql);
 
-        $categoriaAtualizado = CategoriaDAO::getCategoriaByID($id);
-        return $categoriaAtualizado;
+        $alunoAtualizado = AlunoDAO::getAlunoById($id);
+        return $alunoAtualizado;
     }
 
-    public static function deleteCategoria($id) {
+    public static function deleteAluno($id) {
         $connection = Connection::getConnection();
-        $sql = "DELETE FROM toDoList_categorias WHERE id=$id";
+        $sql = "DELETE FROM as_aluno WHERE id = $id";
         $result = mysqli_query($connection, $sql);
 
         if ($result === FALSE) {
@@ -52,17 +69,17 @@ class AlunoDao {
         }
     }
 
-    public static function addCategoria($categoria) {
+    public static function addAluno($aluno) {
         $connection = Connection::getConnection();
-        $sql = "INSERT INTO toDoList_categorias ( nome, usuario_id) VALUES ('$categoria->nome', $categoria->usuario_id)";
+        $sql = "INSERT INTO as_aluno (nome,rg,cpf,logradouro,numero,bairro,cidade,cep,parcelaspagas,parcelastotais,valortotal)  VALUES('$aluno->nome' ,'$aluno->rg' ,'$aluno->cpf','$aluno->logradouro' ,'$aluno->numero' ,'$aluno->bairro' ,'$aluno->cidade' ,'$aluno->cep' ,'$aluno->parcelaspagas' ,'$aluno->parcelastotais' ,'$aluno->valortotal')";
         $result = mysqli_query($connection, $sql);
 
-        $sql = "SELECT * FROM `toDoList_categorias` WHERE nome = '$categoria->nome' AND usuario_id = '$categoria->usuario_id' ";
+        $sql = "SELECT * FROM `as_aluno` WHERE nome = '$aluno->nome' AND cpf = '$aluno->cpf' AND rg = '$aluno->rg' ";
         $result = mysqli_query($connection, $sql);
-        $categoria->id = mysqli_fetch_object($result)->id;
+        $aluno->id = mysqli_fetch_object($result)->id;
 
-        $novoCategoria = CategoriaDAO::getCategoriaByID($categoria->id);
-        return $novoCategoria;
+        $novoAluno = AlunoDAO::getAlunoById($aluno->id);
+        return $novoAluno;
     }
 
 }
