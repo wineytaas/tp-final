@@ -10,6 +10,10 @@ body {
     height: 100px;
 }
 
+.box{
+    padding:10px;
+}
+
 .form-signin {
   max-width: 440px;
   padding: 15px;

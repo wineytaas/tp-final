@@ -16,13 +16,13 @@ app.controller('loginController', ['$http',function($http) {
             alert("nao funfou");
         });
         */
-        $http.get('http://localhost:8000/backend/'+user.tipo+'/'+user.login+'/'+user.senha).then(function(response){
+        $http.post('http://localhost:8000/backend/login',user).then(function(response){
             if(response.data.result === true){                
-                document.getElementById("response").innerHTML = "<p class='bg-success'>Logado com sucesso como "+response.data.user.nome+"</p>";
-            } else document.getElementById("response").innerHTML = "<p class='bg-danger'>Login ou senha incorretos!</p>";
+                document.getElementById("response").innerHTML = "<p class='bg-success box'>Logado com sucesso como "+response.data.user.nome+"!</p>";
+            } else document.getElementById("response").innerHTML = "<p class='bg-danger box'>Login ou senha incorretos!</p>";
             self.logResp=response.data;
         }, function(){
-            document.getElementById("response").innerHTML = "<p class='bg-danger'>Erro ao tentar conectar banco de dados</p>";
+            document.getElementById("response").innerHTML = "<p class='bg-danger box'>Erro ao tentar conectar banco de dados</p>";
         });
     };
 }]);
