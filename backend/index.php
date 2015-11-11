@@ -31,7 +31,7 @@ $app->get('/alunos/:login/:senha', function ($login,$senha) {
     //recupera o cliente
     $aluno = AlunoDAO::getAlunoByLogin($login,$senha);
     
-    echo $aluno;
+    echo json_encode($aluno);
 });
 
 $app->post('/alunos', function() {
@@ -60,12 +60,7 @@ $app->delete('/alunos/:id', function($id) {
     // exclui o cliente
     $isDeleted = AlunoDAO::deleteAluno($id);
 
-    // verifica se houve problema na exclusão
-    if ($isDeleted) {
-        echo "{'message':'Aluno excluído'}";
-    } else {
-        echo "{'message':'Erro ao excluir aluno'}";
-    }
+    echo json_encode($isDeleted);
 });
 
 //-------------------------------------  PROPRIEDADES DO PROFESSOR  -------------------------------------
@@ -94,7 +89,7 @@ $app->get('/professores/:login/:senha', function ($login,$senha) {
     //recupera o cliente
     $professor = ProfessorDAO::getProfessorByLogin($login,$senha);
     
-    echo $professor;
+    echo json_encode($professor);
 });
 
 $app->get('/professores', function () {
@@ -119,7 +114,7 @@ $app->delete('/professores/:id', function($id) {
     // exclui o cliente
     $isDeleted = ProfessorDAO::deleteProfessor($id);
 
-    echo $isDeleted;
+    echo json_encode($isDeleted);
 });
 
 

@@ -23,11 +23,6 @@ class ProfessorDAO {
         $result = mysqli_query($connection, $sql);
         $professor = mysqli_fetch_object($result);
 
-//        //recupera cidade do categoria
-//        $sql = "SELECT * FROM toDoList_usuarios WHERE id=$categoria->usuario_id";
-//        $result = mysqli_query($connection, $sql);
-//        $categoria->usuario = mysqli_fetch_object($result);
-
         return $professor;
     }
 
@@ -45,7 +40,7 @@ class ProfessorDAO {
             $ar->result = true;
             $ar->professor = $professor;
         }
-        return json_encode($ar);
+        return $ar;
     }
 
     public static function getAll() {
@@ -80,13 +75,13 @@ class ProfessorDAO {
         $ar = new stdClass();
         if ($result === FALSE) {
             $ar->result = false;
-//            $ar->mensagem = "Erro ao deletar professor!";
+            $ar->mensagem = "Erro ao deletar professor!";
         } else {
             $ar->result = true;
-//            $ar->mensagem = "Professor deletado!";
+            $ar->mensagem = "Professor deletado!";
         }
         
-        return json_encode($ar);
+        return $ar;
     }
 
 }

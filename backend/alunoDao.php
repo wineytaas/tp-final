@@ -1,17 +1,27 @@
 <?php
 
 class AlunoDAO {
+    
+    public static function getAll() {
+        $connection = Connection::getConnection();
+        $sql = "SELECT * FROM as_aluno";
+
+        // recupera todos os categorias
+        $result = mysqli_query($connection, $sql);
+        $alunos = array();
+        while ($aluno = mysqli_fetch_object($result)) {
+            if ($aluno != null) {
+                $alunos[] = $aluno;
+            }
+        }
+        return $alunos;
+    }
 
     public static function getAlunoById($id) {
         $connection = Connection::getConnection();
         $sql = "SELECT * FROM as_aluno WHERE id = $id";
         $result = mysqli_query($connection, $sql);
         $aluno = mysqli_fetch_object($result);
-
-//        //recupera cidade do categoria
-//        $sql = "SELECT * FROM toDoList_usuarios WHERE id=$categoria->usuario_id";
-//        $result = mysqli_query($connection, $sql);
-//        $categoria->usuario = mysqli_fetch_object($result);
 
         return $aluno;
     }
@@ -30,24 +40,10 @@ class AlunoDAO {
             $ar->result = true;
             $ar->aluno = $aluno;
         } 
-        return json_encode($ar);
+        return $ar;
     }
 
-    public static function getAll() {
-        $connection = Connection::getConnection();
-        $sql = "SELECT * FROM as_aluno";
-
-        // recupera todos os categorias
-        $result = mysqli_query($connection, $sql);
-        $alunos = array();
-        while ($aluno = mysqli_fetch_object($result)) {
-            if ($aluno != null) {
-                $alunos[] = $aluno;
-            }
-        }
-        return $alunos;
-    }
-
+    
     public static function updateAluno($aluno, $id) {
         $connection = Connection::getConnection();
         $sql = "UPDATE as_aluno SET nome='$aluno->nome' ,rg='$aluno->rg' ,cpf='$aluno->cpf' ,logradouro='$aluno->logradouro' ,numero='$aluno->numero' ,bairro='$aluno->bairro' ,cidade='$aluno->cidade' ,cep='$aluno->cep' ,parcelaspagas='$aluno->parcelaspagas' ,parcelastotais='$aluno->parcelastotais' ,valortotal='$aluno->valortotal',login='$aluno->login',senha='$aluno->senha' WHERE id = $id";
@@ -62,11 +58,16 @@ class AlunoDAO {
         $sql = "DELETE FROM as_aluno WHERE id = $id";
         $result = mysqli_query($connection, $sql);
 
+        $ar = new stdClass();
         if ($result === FALSE) {
-            return false;
+            $ar->result = false;
+            $ar->mensagem = "Erro ao deletar professor!";
         } else {
-            return true;
+            $ar->result = true;
+            $ar->mensagem = "Professor deletado!";
         }
+        
+        return $ar;
     }
 
     public static function addAluno($aluno) {
