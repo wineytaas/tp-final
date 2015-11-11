@@ -30,7 +30,7 @@ class AlunoDAO {
             $ar->result = true;
             $ar->aluno = $aluno;
         } 
-        return $ar;
+        return json_encode($ar);
     }
 
     public static function getAll() {
@@ -71,7 +71,8 @@ class AlunoDAO {
 
     public static function addAluno($aluno) {
         $connection = Connection::getConnection();
-        $sql = "INSERT INTO as_aluno (nome,rg,cpf,logradouro,numero,bairro,cidade,cep,parcelaspagas,parcelastotais,valortotal)  VALUES('$aluno->nome' ,'$aluno->rg' ,'$aluno->cpf','$aluno->logradouro' ,'$aluno->numero' ,'$aluno->bairro' ,'$aluno->cidade' ,'$aluno->cep' ,'$aluno->parcelaspagas' ,'$aluno->parcelastotais' ,'$aluno->valortotal')";
+        $sql = "INSERT INTO as_aluno (nome,rg,cpf,logradouro,numero,bairro,cidade,cep,parcelaspagas,parcelastotais,valortotal,login,senha)"
+                . " VALUES('$aluno->nome' ,'$aluno->rg' ,'$aluno->cpf','$aluno->logradouro' ,'$aluno->numero' ,'$aluno->bairro' ,'$aluno->cidade' ,'$aluno->cep' ,'$aluno->parcelaspagas' ,'$aluno->parcelastotais' ,'$aluno->valortotal','$aluno->login','$aluno->senha')";
         $result = mysqli_query($connection, $sql);
 
         $sql = "SELECT * FROM `as_aluno` WHERE nome = '$aluno->nome' AND cpf = '$aluno->cpf' AND rg = '$aluno->rg' ";

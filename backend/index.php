@@ -82,6 +82,7 @@ $app->post('/professores', function() {
     echo json_encode($novoProfessor);
 });
 
+//
 $app->get('/professores/:id', function ($id) {
     //recupera o cliente
     $professor = ProfessorDAO::getProfessorById($id);
@@ -121,4 +122,58 @@ $app->delete('/professores/:id', function($id) {
     echo $isDeleted;
 });
 
+
+//-------------------------------------  PROPRIEDADES DA SECRETARIA  -------------------------------------
+
+
+$app->post('/secretarias', function() {
+    // recupera o request
+    $request = \Slim\Slim::getInstance()->request();
+
+    // insere o cliente
+    $novoProfessor = json_decode($request->getBody());
+    $novoProfessor = ProfessorDAO::addProfessor($novoProfessor);
+
+    echo json_encode($novoProfessor);
+});
+
+
+$app->get('/professores/:id', function ($id) {
+    //recupera o cliente
+    $professor = ProfessorDAO::getProfessorById($id);
+    
+    echo json_encode($professor);
+});
+
+$app->get('/professores/:login/:senha', function ($login,$senha) {
+    //recupera o cliente
+    $professor = ProfessorDAO::getProfessorByLogin($login,$senha);
+    
+    echo $professor;
+});
+
+$app->get('/professores', function () {
+    //recupera o cliente
+    $professor = ProfessorDAO::getAll();
+    
+    echo json_encode($professor);
+});
+
+$app->put('/professores/:id', function ($id) {
+    // recupera o request
+    $request = \Slim\Slim::getInstance()->request();
+
+    // atualiza o aluno
+    $professor = json_decode($request->getBody());
+    $professor = ProfessorDAO::updateProfessor($professor, $id);
+
+    echo json_encode($professor );
+});
+
+$app->delete('/professores/:id', function($id) {
+    // exclui o cliente
+    $isDeleted = ProfessorDAO::deleteProfessor($id);
+
+    echo $isDeleted;
+});
 $app->run();
