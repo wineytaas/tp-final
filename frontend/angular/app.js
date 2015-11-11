@@ -6,8 +6,8 @@ app.controller('loginController', ['$http',function($http) {
     // acoes e propriedades do meu controller
     this.userLog = {};
     this.login = function(user) {
-        $http.get('http://150.164.237.223:8000/backend/alunos/4'+user.tipo+'/'+user.login+'/'+user.senha).then(function(response){
-            alert("ok");
+        $http.get('http://localhost:8000/backend/'+user.tipo+'/'+user.login+'/'+user.senha).then(function(response){
+            alert(response.result);
             userLog=response.data;
         }, function(){
             alert("Erro!");
