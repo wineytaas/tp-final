@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="row">
+        <img src="img/logo.jpg" class="logo">
+    </div>
+    <div class="row" ng-controller="loginController as lCtrl" ng-init="user.tipo = 'alunos'">
+    <form novalidate class="form-signin" ng-submit="lCtrl.login(user)">
+      <h2 class="form-signin-heading">Acesso</h2>
+      <label for="inputLogin" class="sr-only">Login</label>
+      <input type="text" id="inputLogin" class="form-control" placeholder="Login" ng-model="user.login" required autofocus>
+      <label for="inputPassword" class="sr-only" >Senha</label>
+      <input type="password" id="inputPassword" class="form-control" ng-model="user.senha" placeholder="Senha" required>
+
+      <label for="inputAccess" class="sr-only">Tipo de Acesso</label>
+      <select id="inputAccess" class="form-control" ng-model="user.tipo">
+          <option value="alunos">Aluno</option>
+          <option value="professores">Professor</option>
+          <option value="secretarias">Secretaria</option>
+        </select>
+      <br>
+      <button class="btn btn-lg btn-primary btn-block" id="btLogin" type="submit">Logar</button>
+    </form>
+        <div id="response" class="row"></div>
+    </div>
+
+</div> <!-- /container -->
