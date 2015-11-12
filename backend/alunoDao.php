@@ -46,7 +46,7 @@ class AlunoDAO {
     
     public static function updateAluno($aluno, $id) {
         $connection = Connection::getConnection();
-        $sql = "UPDATE as_aluno SET nome='$aluno->nome' ,rg='$aluno->rg' ,cpf='$aluno->cpf' ,logradouro='$aluno->logradouro' ,numero='$aluno->numero' ,bairro='$aluno->bairro' ,cidade='$aluno->cidade' ,cep='$aluno->cep' ,parcelaspagas='$aluno->parcelaspagas' ,parcelastotais='$aluno->parcelastotais' ,valortotal='$aluno->valortotal',login='$aluno->login',senha='$aluno->senha' WHERE id = $id";
+        $sql = "UPDATE as_aluno SET turma_id='$aluno->turma_id', nome='$aluno->nome' ,rg='$aluno->rg' ,cpf='$aluno->cpf' ,logradouro='$aluno->logradouro' ,numero='$aluno->numero' ,bairro='$aluno->bairro' ,cidade='$aluno->cidade' ,cep='$aluno->cep' ,parcelaspagas='$aluno->parcelaspagas' ,parcelastotais='$aluno->parcelastotais' ,valortotal='$aluno->valortotal',login='$aluno->login',senha='$aluno->senha' WHERE id = $id";
         $result = mysqli_query($connection, $sql);
 
         $alunoAtualizado = AlunoDAO::getAlunoById($id);
@@ -72,8 +72,8 @@ class AlunoDAO {
 
     public static function addAluno($aluno) {
         $connection = Connection::getConnection();
-        $sql = "INSERT INTO as_aluno (nome,rg,cpf,logradouro,numero,bairro,cidade,cep,parcelaspagas,parcelastotais,valortotal,login,senha)"
-                . " VALUES('$aluno->nome' ,'$aluno->rg' ,'$aluno->cpf','$aluno->logradouro' ,'$aluno->numero' ,'$aluno->bairro' ,'$aluno->cidade' ,'$aluno->cep' ,'$aluno->parcelaspagas' ,'$aluno->parcelastotais' ,'$aluno->valortotal','$aluno->login','$aluno->senha')";
+        $sql = "INSERT INTO as_aluno (nome,rg,cpf,logradouro,numero,bairro,cidade,cep,parcelaspagas,parcelastotais,valortotal,login,senha,turma_id)"
+                . " VALUES('$aluno->nome' ,'$aluno->rg' ,'$aluno->cpf','$aluno->logradouro' ,'$aluno->numero' ,'$aluno->bairro' ,'$aluno->cidade' ,'$aluno->cep' ,'$aluno->parcelaspagas' ,'$aluno->parcelastotais' ,'$aluno->valortotal','$aluno->login','$aluno->senha','$aluno->turma_id')";
         $result = mysqli_query($connection, $sql);
 
         $sql = "SELECT * FROM `as_aluno` WHERE nome = '$aluno->nome' AND cpf = '$aluno->cpf' AND rg = '$aluno->rg' ";

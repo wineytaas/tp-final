@@ -179,4 +179,51 @@ $app->delete('/secretarias/:id', function($id) {
 
     echo json_encode($isDeleted);
 });
+
+//-------------------------------------  PROPRIEDADES DA SECRETARIA  -------------------------------------
+
+
+$app->post('/turmas', function() {
+    // recupera o request
+    $request = \Slim\Slim::getInstance()->request();
+
+    // insere o cliente
+    $novaTurma = json_decode($request->getBody());
+    $novaTurma = TurmaDAO::addTurma($novaTurma);
+
+    echo json_encode($novaTurma);
+});
+
+
+$app->get('/turmas/:id', function ($id) {
+    //recupera o cliente
+    $turma = TurmaDAO::getTurmaById($id);
+    
+    echo json_encode($turma);
+});
+
+$app->get('/turmas', function () {
+    //recupera o cliente
+    $turma = TurmaDAO::getAll();
+    
+    echo json_encode($turma);
+});
+
+$app->put('/turmas/:id', function ($id) {
+    // recupera o request
+    $request = \Slim\Slim::getInstance()->request();
+
+    // atualiza o aluno
+    $turma = json_decode($request->getBody());
+    $turma = TurmaDAO::updateTurma($turma, $id);
+
+    echo json_encode($turma );
+});
+
+$app->delete('/turmas/:id', function($id) {
+    // exclui o cliente
+    $isDeleted = TurmaDAO::deleteTurma($id);
+
+    echo json_encode($isDeleted);
+});
 $app->run();
