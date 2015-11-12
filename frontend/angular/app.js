@@ -55,7 +55,7 @@ app.factory('AuthenticationService', ['$http', '$cookieStore', '$rootScope', fun
 }]);
     
     
-app.controller('loginController', ['$rootScope','$location','$http', 'AuthenticationService',function($rootScope, $location, $http, AuthenticationService) {
+app.controller('loginController', ['$rootScope','$location','$http', '$interval', 'AuthenticationService',function($rootScope, $location, $http, $interval, AuthenticationService) {
     // acoes e propriedades do meu controller
     this.userLog = {};
     var self = this;
@@ -78,10 +78,12 @@ app.controller('loginController', ['$rootScope','$location','$http', 'Authentica
             if(response.data.result === true){                
                 
                 $("#btLogin").text("Redirecionando...");
-                
+                document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Logado com sucesso como "+response.data.user.nome+"!</p>";
                 AuthenticationService.SetCredentials(response.data.user.login, response.data.user.senha);
-       
-                document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Logado com sucesso como "+$rootScope.globals.currentUser.username+"!</p>";
+                $interval(function(){                    
+                    $location.path("/");
+                },2000);
+                
   
             } else {
                 document.getElementById("response").innerHTML = "<p class='alert alert-danger box'>Login ou senha incorretos!</p>";      
