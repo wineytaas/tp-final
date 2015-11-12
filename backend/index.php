@@ -18,6 +18,7 @@ $app->post('/login', function() {
     $user = json_decode($request->getBody());
     if($user->tipo == "alunos") echo json_encode(AlunoDAO::getAlunoByLogin($user->login,$user->senha));
     if($user->tipo == "professores") echo json_encode(ProfessorDAO::getProfessorByLogin($user->login,$user->senha));
+    if($user->tipo == "secretarias") echo json_encode(SecretariaDAO::getSecretariaByLogin($user->login,$user->senha));
 });
 
 //-------------------------------------  PROPRIEDADES DO ALUNO  -------------------------------------
@@ -133,49 +134,49 @@ $app->post('/secretarias', function() {
     $request = \Slim\Slim::getInstance()->request();
 
     // insere o cliente
-    $novoProfessor = json_decode($request->getBody());
-    $novoProfessor = ProfessorDAO::addProfessor($novoProfessor);
+    $novaSecretaria = json_decode($request->getBody());
+    $novaSecretaria = SecretariaDAO::addSecretaria($novaSecretaria);
 
-    echo json_encode($novoProfessor);
+    echo json_encode($novaSecretaria);
 });
 
 
-$app->get('/professores/:id', function ($id) {
+$app->get('/secretarias/:id', function ($id) {
     //recupera o cliente
-    $professor = ProfessorDAO::getProfessorById($id);
+    $professor = SecretariaDAO::getSecretariaById($id);
     
     echo json_encode($professor);
 });
 
-$app->get('/professores/:login/:senha', function ($login,$senha) {
+$app->get('/secretarias/:login/:senha', function ($login,$senha) {
     //recupera o cliente
-    $professor = ProfessorDAO::getProfessorByLogin($login,$senha);
+    $secretaria = SecretariaDAO::getSecretariaByLogin($login,$senha);
     
-    echo $professor;
+    echo json_encode($secretaria);
 });
 
-$app->get('/professores', function () {
+$app->get('/secretarias', function () {
     //recupera o cliente
-    $professor = ProfessorDAO::getAll();
+    $secretaria = SecretariaDAO::getAll();
     
-    echo json_encode($professor);
+    echo json_encode($secretaria);
 });
 
-$app->put('/professores/:id', function ($id) {
+$app->put('/secretarias/:id', function ($id) {
     // recupera o request
     $request = \Slim\Slim::getInstance()->request();
 
     // atualiza o aluno
-    $professor = json_decode($request->getBody());
-    $professor = ProfessorDAO::updateProfessor($professor, $id);
+    $secretaria = json_decode($request->getBody());
+    $secretaria = SecretariaDAO::updateSecretaria($secretaria, $id);
 
-    echo json_encode($professor );
+    echo json_encode($secretaria );
 });
 
-$app->delete('/professores/:id', function($id) {
+$app->delete('/secretarias/:id', function($id) {
     // exclui o cliente
-    $isDeleted = ProfessorDAO::deleteProfessor($id);
+    $isDeleted = SecretariaDAO::deleteSecretaria($id);
 
-    echo $isDeleted;
+    echo json_encode($isDeleted);
 });
 $app->run();
