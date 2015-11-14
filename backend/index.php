@@ -11,6 +11,17 @@ $app = new \Slim\Slim();
 $app->response()->header('Content-Type', 'application/json;charset=utf-8');
 
 
+$app->post('/menu', function(){
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
+    $answer = new stdClass();
+    $menu = array();
+    $optLogout = new stdClass();
+    $optLogout->descricao = "Deslogar";
+    $optLogout->url = "/logout";
+    $menu[] = $optLogout;
+    $answer->auth_key = $authorization;
+});
+
 $app->post('/login', function() {
     
     $request = \Slim\Slim::getInstance()->request();
