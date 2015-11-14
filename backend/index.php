@@ -129,9 +129,15 @@ $app->post('/login', function() {
     $request = \Slim\Slim::getInstance()->request();
     // recupera todos os clientes
     $user = json_decode($request->getBody());
-    if($user->tipo == "alunos") echo json_encode(AlunoDAO::getAlunoByLogin($user->login,$user->senha));
-    if($user->tipo == "professores") echo json_encode(ProfessorDAO::getProfessorByLogin($user->login,$user->senha));
-    if($user->tipo == "secretarias") echo json_encode(SecretariaDAO::getSecretariaByLogin($user->login,$user->senha));
+    if(isset($user->tipo) && isset($user->login) && isset($user->senha) ){
+        if($user->tipo == "alunos") echo json_encode(AlunoDAO::getAlunoByLogin($user->login,$user->senha));
+        if($user->tipo == "professores") echo json_encode(ProfessorDAO::getProfessorByLogin($user->login,$user->senha));
+        if($user->tipo == "secretarias") echo json_encode(SecretariaDAO::getSecretariaByLogin($user->login,$user->senha));  
+    } else {
+        $ar = new stdClass();
+        $ar->result = false;
+        echo json_encode($ar);
+    }
 });
 
 //-------------------------------------  PROPRIEDADES DO ALUNO  -------------------------------------
