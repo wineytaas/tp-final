@@ -2,7 +2,7 @@
     <div class="row">
         <img src="img/logo.jpg" class="logo">
     </div>
-    <div class="row"ng-init="user.tipo = 'alunos'">
+    <div class="row"ng-init="user.tipo = 'alunos'; user.login = ''; user.senha = ''">
     <form novalidate class="form-signin" ng-submit="lCtrl.login(user)">
       <h2 class="form-signin-heading">Acesso</h2>
       <label for="inputLogin" class="sr-only">Login</label>
