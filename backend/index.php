@@ -89,40 +89,65 @@ $app->post('/login', function() {
 //-------------------------------------  PROPRIEDADES DO ALUNO  -------------------------------------
 $app->get('/alunos', function() {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
-    // recupera todos os clientes
-    $alunos = AlunoDAO::getAll();
-    $cl = new stdClass();
-    $cl->alunos = $alunos;
-    $cl->auth_key = $authorization;
-    echo json_encode($cl);
+    
+    $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
+    if($secretariar){        
+        // recupera todos os clientes
+        $alunos = AlunoDAO::getAll();
+        $cl = new stdClass();
+        $cl->alunos = $alunos;
+        $cl->auth_key = $authorization;
+        echo json_encode($cl);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);        
+    }
 });
 
 $app->get('/alunos/:id', function ($id) {
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     //recupera o cliente
-    $aluno = AlunoDAO::getAlunoById($id);
-    
-    echo json_encode($aluno);
+    $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
+    if($secretariar){        
+        $aluno = AlunoDAO::getAlunoById($id);
+
+        echo json_encode($aluno);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);        
+    }
 });
 
-$app->get('/alunos/:login/:senha', function ($login,$senha) {
-    //recupera o cliente
-    $aluno = AlunoDAO::getAlunoByLogin($login,$senha);
-    
-    echo json_encode($aluno);
-});
 
 $app->post('/alunos', function() {
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     // recupera o request
     $request = \Slim\Slim::getInstance()->request();
+    
+    //recupera o cliente
+    $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
+    
+    if($secretariar){        
+        // insere o cliente
+        $novoUsuario = json_decode($request->getBody());
+        $novoUsuario = AlunoDAO::addAluno($novoUsuario);
+        echo json_encode($novoUsuario);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);        
+    }
 
-    // insere o cliente
-    $novoUsuario = json_decode($request->getBody());
-    $novoUsuario = AlunoDAO::addAluno($novoUsuario);
-
-    echo json_encode($novoUsuario);
+    
 });
 
 $app->put('/alunos/:id', function ($id) {
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     // recupera o request
     $request = \Slim\Slim::getInstance()->request();
 
