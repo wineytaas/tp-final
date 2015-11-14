@@ -16,6 +16,11 @@ app.config(function($routeProvider) {
       controllerAs: "loginCtrl"
     }
   )
+  .when("/logout", 
+    {
+      redirectTo: "/login"
+    }
+  )
   .otherwise(
     {
       redirectTo: "/Pagina-Invalida"    
@@ -24,28 +29,29 @@ app.config(function($routeProvider) {
 });
 
 
-app.factory('AuthenticationService', ['$http', '$cookieStore', '$rootScope', function($http, $cookieStore, $rootScope) {
+app.factory('AuthenticationService', ['$http', '$cookieStore', '$rootScope', '$location', function($http, $cookieStore, $rootScope, $location) {
     var service = {};
     service.menu=[];
     service.getMenu = getMenu;
+    service.treatError = treatError;
     service.SetCredentials = SetCredentials;
     service.ClearCredentials = ClearCredentials;
     
     return service;
     
-        function getMenu(){
-            var answer=[{
-      "descricao": "Deslogar2",
-      "url": "#/logout"
-    },{
-      "descricao": "Deslogar3",
-      "url": "#/logout"
-    }];
-            
+        function getMenu(){            
             $http.get('http://localhost:8000/backend/menu').then(function(response){
                service.menu = response.data.menu;
+               if(response.data.error !== undefined) service.treatError(response.data);
             }, function(){
             });
+        }
+        
+        function treatError(error){
+            if(error.error === 1){
+                service.ClearCredentials();                   
+                $location.path("/login");
+            }
         }
    
         function SetCredentials(username, password) {
