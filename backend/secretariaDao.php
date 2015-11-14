@@ -44,6 +44,20 @@ class SecretariaDAO {
         return $ar;
     }
     
+    public static function checkAuthorizationKey($key){
+        $secretarias = SecretariaDAO::getAll();
+        $ar = new stdClass();
+        $ar->result = false;
+        foreach($secretarias as $secretaria){
+            $genKey = ProfessorDAO::generateKey($secretaria->login, $secretaria->senha);
+            if($genKey == $key) {
+                $ar->result = true;
+                $ar->user = $secretaria;
+            }
+        }
+        return $ar;
+    }
+    
     public static function generateKey($user,$password){
         return md5("secretaria".$user.$password.date("d"));
     }

@@ -24,10 +24,56 @@ $app->get('/menu', function(){
     $optLogout->descricao = "Deslogar";
     $optLogout->url = "#/logout";
     $menu[] = $optHome;
+    $alunor = AlunoDAO::checkAuthorizationKey($authorization)->result;
+    $professorr = ProfessorDAO::checkAuthorizationKey($authorization)->result;
+    $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
+    if($alunor){
+        $optDados = new stdClass();
+        $optDados->descricao = "Meus dados";
+        $optDados->url = "#/meusdados";
+        $optNotas = new stdClass();
+        $optNotas->descricao = "Minhas notas";
+        $optNotas->url = "#/minhasnotas";
+        $menu[] = $optDados;
+        $menu[] = $optNotas;
+    }
+    
+    if($professorr){
+        $optAtividades = new stdClass();
+        $optAtividades->descricao = "Gerenciar atividades";
+        $optAtividades->url = "#/gerenciaratividades";
+        $optTurmas = new stdClass();
+        $optTurmas->descricao = "Lançar nota";
+        $optTurmas->url = "#/lancarnota";
+        $menu[] = $optAtividades;
+        $menu[] = $optTurmas;
+    }
+    
+    if($secretariar){        
+        $optAlunos = new stdClass();
+        $optAlunos->descricao = "Gerenciar Alunos";
+        $optAlunos->url = "#/gerenciaralunos";
+        $optProfessores = new stdClass();
+        $optProfessores->descricao = "Gerenciar Professores";
+        $optProfessores->url = "#/gerenciarprofessores";
+        $optTurmas = new stdClass();
+        $optTurmas->descricao = "Gerenciar Turmas";
+        $optTurmas->url = "#/gerenciarturmas";
+        $menu[] = $optAlunos;
+        $menu[] = $optProfessores;
+        $menu[] = $optTurmas;
+    }
     $menu[] = $optLogout;
     $answer->auth_key = $authorization;
     $answer->menu = $menu;
-    echo json_encode($answer);
+    if ($alunor || $professorr || $secretariar) {
+        echo json_encode($answer);
+    } else {
+        $error = new stdClass();
+        $error->error = 1;
+        $error->description = "Chave de autorização inválida!";
+        echo json_encode($error);
+    }
 });
 
 $app->post('/login', function() {

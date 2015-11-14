@@ -59,6 +59,20 @@ class ProfessorDAO {
         return $professores;
     }
     
+    public static function checkAuthorizationKey($key){
+        $professores = ProfessorDAO::getAll();
+        $ar = new stdClass();
+        $ar->result = false;
+        foreach($professores as $professor){
+            $genKey = ProfessorDAO::generateKey($professor->login, $professor->senha);
+            if($genKey == $key) {
+                $ar->result = true;
+                $ar->user = $professor;
+            }
+        }
+        return $ar;
+    }
+    
     public static function generateKey($user,$password){
         return md5("professor".$user.$password.date("d"));
     }
