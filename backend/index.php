@@ -5,6 +5,8 @@ require 'Slim/Slim.php';
 
 require 'connection.php';
 require 'alunoDao.php';
+require 'professorDao.php';
+require 'secretariaDao.php';
 
 
 $app = new \Slim\Slim();
@@ -15,9 +17,13 @@ $app->get('/menu', function(){
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     $answer = new stdClass();
     $menu = array();
+    $optHome = new stdClass();
+    $optHome->descricao = "Início";
+    $optHome->url = "#/";
     $optLogout = new stdClass();
     $optLogout->descricao = "Deslogar";
     $optLogout->url = "#/logout";
+    $menu[] = $optHome;
     $menu[] = $optLogout;
     $answer->auth_key = $authorization;
     $answer->menu = $menu;
