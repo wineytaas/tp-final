@@ -18,7 +18,7 @@ app.config(function($routeProvider) {
   )
   .otherwise(
     {
-      redirectTo: "/"    
+      redirectTo: "/Pagina-Invalida"    
     }
   );
 });
