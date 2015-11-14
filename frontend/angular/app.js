@@ -40,7 +40,7 @@ app.factory('AuthenticationService', ['$http', '$cookieStore', '$rootScope', '$l
     return service;
     
         function getMenu(){            
-            $http.get('http://localhost:8000/backend/menu').then(function(response){
+            $http.get('/backend/menu').then(function(response){
                service.menu = response.data.menu;
                if(response.data.error !== undefined) service.treatError(response.data);
             }, function(){
@@ -100,7 +100,7 @@ app.controller('loginController', ['$rootScope','$location','$http', '$interval'
     this.login = function(user) {
 
        $("#btLogin").attr("disabled","disabled");
-        $http.post('http://localhost:8000/backend/login',user).then(function(response){
+        $http.post('/backend/login',user).then(function(response){
             if(response.data.result === true){                
                 
                 $("#btLogin").text("Redirecionando...");
