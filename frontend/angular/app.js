@@ -13,7 +13,7 @@ app.config(function($routeProvider) {
     {
       templateUrl: "login.view.html",
       controller: "loginController",
-      controllerAs: "loginCtrl"
+      controllerAs: "lCtrl"
     }
   )
   .when("/logout", 
@@ -43,6 +43,53 @@ app.factory('AuthenticationService', ['$http', '$cookieStore', '$rootScope', '$l
             $http.get('/backend/menu').then(function(response){
                service.menu = response.data.menu;
                if(response.data.error !== undefined) service.treatError(response.data);
+            }, function(){
+            });
+        }
+        
+        function treatError(error){
+            document.getElementById("response").innerHTML = "<p class='bg-danger box'>"+error.description+"</p>";            
+            if(error.error === 1){
+                service.ClearCredentials();                   
+                $location.path("/login");
+            }
+        }
+   
+        function SetCredentials(username, password) {
+            var authdata = password;
+ 
+            $rootScope.globals = {
+                currentUser: {
+                    username: username,
+                    authdata: authdata
+                }
+            };
+ 
+            $http.defaults.headers.common['Authorization'] = authdata; // jshint ignore:line
+            $cookieStore.put('globals', $rootScope.globals);
+        }
+ 
+        function ClearCredentials() {
+            $rootScope.globals = {};
+            $cookieStore.remove('globals');
+            $http.defaults.headers.common.Authorization = '';
+        }
+ 
+}]);
+
+app.factory('GeneralService', ['$http', '$cookieStore', '$rootScope', '$location', 'AuthenticationService', function($http, $cookieStore, $rootScope, $location, AuthenticationService) {
+    var service = {};
+    service.noticias=[];
+    service.getNoticias = getNoticias;
+    
+    return service;
+    
+        function getNoticias(){            
+            $http.get('/backend/noticias').then(function(response){
+               service.noticias = response.data.noticias;
+               if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+               }
             }, function(){
             });
         }
