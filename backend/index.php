@@ -87,6 +87,8 @@ $app->get('/noticias', function(){
     $noticiaTeste = new stdClass();
     $noticiaTeste->id = 1;
     $noticiaTeste->descricao = "Início";
+    $noticiaTeste->data = "14/11";
+    $noticiaTeste->autor = "Gabriel Dutra";
     $noticiaTeste->noticia = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eget magna id ex cursus tempus at vel diam. Donec hendrerit venenatis nisi vitae faucibus. Ut feugiat nibh sed sem varius, eget scelerisque justo pellentesque. Mauris a magna vel felis cursus ullamcorper. Curabitur eu lacinia tortor. Nunc tempus tempus feugiat. Donec nec porttitor quam. Nunc rutrum quam arcu, ac fermentum libero ultricies sed. Aliquam convallis rutrum eleifend. Vestibulum eu ex nec dolor faucibus semper.";
     
     $noticias[] = $noticiaTeste;
