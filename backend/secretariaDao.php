@@ -38,9 +38,14 @@ class SecretariaDAO {
             $ar->result = false;
         } else {
             $ar->result = true;
+            $ar->auth_key = SecretariaDAO::generateKey($login, $senha);
             $ar->user = $secretaria;
         }
         return $ar;
+    }
+    
+    public static function generateKey($user,$password){
+        return md5("secretaria".$user.$password.date("d"));
     }
 
     public static function getAll() {

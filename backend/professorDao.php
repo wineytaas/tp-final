@@ -38,6 +38,7 @@ class ProfessorDAO {
             $ar->result = false;
         } else {
             $ar->result = true;
+            $ar->auth_key = ProfessorDAO::generateKey($login, $senha);
             $ar->user = $professor;
         }
         return $ar;
@@ -56,6 +57,10 @@ class ProfessorDAO {
             }
         }
         return $professores;
+    }
+    
+    public static function generateKey($user,$password){
+        return md5("professor".$user.$password.date("d"));
     }
 
     public static function updateProfessor($professor, $id) {

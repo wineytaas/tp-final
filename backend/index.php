@@ -23,9 +23,13 @@ $app->post('/login', function() {
 
 //-------------------------------------  PROPRIEDADES DO ALUNO  -------------------------------------
 $app->get('/alunos', function() {
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     // recupera todos os clientes
     $alunos = AlunoDAO::getAll();
-    echo json_encode($alunos);
+    $cl = new stdClass();
+    $cl->alunos = $alunos;
+    $cl->auth_key = $authorization;
+    echo json_encode($cl);
 });
 
 $app->get('/alunos/:id', function ($id) {

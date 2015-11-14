@@ -16,6 +16,24 @@ class AlunoDAO {
         }
         return $alunos;
     }
+    
+    public static function checkAuthorizationKey($key){
+        $alunos = AlunoDAO::getAll();
+        $ar = new stdClass();
+        $ar->result = false;
+        foreach($alunos as $aluno){
+            $genKey = AlunoDAO::generateKey($aluno->login, $aluno->senha);
+            if($genKey == $key) {
+                $ar->result = true;
+                $ar->user = $aluno;
+            }
+        }
+        return $ar;
+    }
+    
+    public static function generateKey($user,$password){
+        return md5("aluno".$user.$password.date("d"));
+    }
 
     public static function getAlunoById($id) {
         $connection = Connection::getConnection();
@@ -38,6 +56,7 @@ class AlunoDAO {
             $ar->result = false;
         }else{
             $ar->result = true;
+            $ar->auth_key = AlunoDAO::generateKey($login, $senha);
             $ar->user = $aluno;
         } 
         return $ar;

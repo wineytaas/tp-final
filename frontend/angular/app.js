@@ -33,7 +33,7 @@ app.factory('AuthenticationService', ['$http', '$cookieStore', '$rootScope', fun
     return service;
    
         function SetCredentials(username, password) {
-            var authdata = username + ':' + password;
+            var authdata = password;
  
             $rootScope.globals = {
                 currentUser: {
@@ -42,14 +42,14 @@ app.factory('AuthenticationService', ['$http', '$cookieStore', '$rootScope', fun
                 }
             };
  
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
+            $http.defaults.headers.common['Authorization'] = authdata; // jshint ignore:line
             $cookieStore.put('globals', $rootScope.globals);
         }
  
         function ClearCredentials() {
             $rootScope.globals = {};
             $cookieStore.remove('globals');
-            $http.defaults.headers.common.Authorization = 'Basic';
+            $http.defaults.headers.common.Authorization = '';
         }
  
 }]);
@@ -65,21 +65,15 @@ app.controller('loginController', ['$rootScope','$location','$http', '$interval'
             AuthenticationService.ClearCredentials();
         })();
     this.login = function(user) {
-        /*
-        var jsonObject = {'nome': 'Teste', 'login': 'Teste', 'senha': 'Teste', 'logradouro': 'Teste', 'numero': '100','bairro': 'Teste','cep': '102030','cidade': 'Teste','complemento': 'Teste','salario': '1000'};
-        $http.post('http://localhost:8000/backend/professores', jsonObject).then(function(response){
-            alert("funfou");
-        },function(){
-            alert("nao funfou");
-        });
-        */
+
        $("#btLogin").attr("disabled","disabled");
         $http.post('http://localhost:8000/backend/login',user).then(function(response){
             if(response.data.result === true){                
                 
                 $("#btLogin").text("Redirecionando...");
                 document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Logado com sucesso como "+response.data.user.nome+"!</p>";
-                AuthenticationService.SetCredentials(response.data.user.login, response.data.user.senha);
+                AuthenticationService.SetCredentials(response.data.user.login, response.data.auth_key);
+                
                 $interval(function(){                    
                     $location.path("/");
                 },2000);
@@ -101,7 +95,7 @@ app.run(['$rootScope', '$location', '$cookieStore', '$http', function run($rootS
         // keep user logged in after page refresh
         $rootScope.globals = $cookieStore.get('globals') || {};
         if ($rootScope.globals.currentUser) {
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+            $http.defaults.headers.common['Authorization'] = $rootScope.globals.currentUser.authdata; // jshint ignore:line
         }
  
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
