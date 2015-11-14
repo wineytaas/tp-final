@@ -48,7 +48,7 @@ app.factory('AuthenticationService', ['$http', '$cookieStore', '$rootScope', '$l
         }
         
         function treatError(error){
-            document.getElementById("response").innerHTML = "<p class='bg-danger box'>"+error.description+"</p>";            
+            document.getElementById("response").innerHTML = "<p class='alert-danger alert'>"+error.description+"</p>";            
             if(error.error === 1){
                 service.ClearCredentials();                   
                 $location.path("/login");
@@ -94,42 +94,17 @@ app.factory('GeneralService', ['$http', '$cookieStore', '$rootScope', '$location
             });
         }
         
-        function treatError(error){
-            if(error.error === 1){
-                service.ClearCredentials();                   
-                $location.path("/login");
-            }
-        }
-   
-        function SetCredentials(username, password) {
-            var authdata = password;
- 
-            $rootScope.globals = {
-                currentUser: {
-                    username: username,
-                    authdata: authdata
-                }
-            };
- 
-            $http.defaults.headers.common['Authorization'] = authdata; // jshint ignore:line
-            $cookieStore.put('globals', $rootScope.globals);
-        }
- 
-        function ClearCredentials() {
-            $rootScope.globals = {};
-            $cookieStore.remove('globals');
-            $http.defaults.headers.common.Authorization = '';
-        }
- 
 }]);
 
-app.controller('homeController',['$rootScope', '$location', '$http', 'AuthenticationService', function($rootScope, $location, $http, AuthenticationService){
+app.controller('homeController',['$rootScope', '$location', '$http', 'AuthenticationService', 'GeneralService', function($rootScope, $location, $http, AuthenticationService, GeneralService){
 
         this.authS = AuthenticationService;
+        this.generalS = GeneralService;
         var self = this;
         
         (function initController() {
-            AuthenticationService.getMenu();            
+            AuthenticationService.getMenu();   
+            GeneralService.getNoticias();
         })();
         
 }]);
@@ -165,7 +140,7 @@ app.controller('loginController', ['$rootScope','$location','$http', '$interval'
             }
             self.logResp=response.data;
         }, function(){
-            document.getElementById("response").innerHTML = "<p class='bg-danger box'>Erro ao tentar conectar banco de dados</p>";            
+            document.getElementById("response").innerHTML = "<p class='alert-danger alert'>Erro ao tentar conectar banco de dados</p>";            
             $("#btLogin").removeAttr("disabled");
         });
     };
