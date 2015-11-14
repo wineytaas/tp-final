@@ -5,7 +5,7 @@ app.config(function($routeProvider) {
   $routeProvider.when("/", 
     {
       templateUrl: "home.view.html",
-      controller: "HomeController",
+      controller: "homeController",
       controllerAs: "homeCtrl"
     }
   )
@@ -26,11 +26,27 @@ app.config(function($routeProvider) {
 
 app.factory('AuthenticationService', ['$http', '$cookieStore', '$rootScope', function($http, $cookieStore, $rootScope) {
     var service = {};
-    
+    service.menu=[];
+    service.getMenu = getMenu;
     service.SetCredentials = SetCredentials;
     service.ClearCredentials = ClearCredentials;
     
     return service;
+    
+        function getMenu(){
+            var answer=[{
+      "descricao": "Deslogar2",
+      "url": "#/logout"
+    },{
+      "descricao": "Deslogar3",
+      "url": "#/logout"
+    }];
+            
+            $http.get('http://localhost:8000/backend/menu').then(function(response){
+               service.menu = response.data.menu;
+            }, function(){
+            });
+        }
    
         function SetCredentials(username, password) {
             var authdata = password;
@@ -52,6 +68,17 @@ app.factory('AuthenticationService', ['$http', '$cookieStore', '$rootScope', fun
             $http.defaults.headers.common.Authorization = '';
         }
  
+}]);
+
+app.controller('homeController',['$rootScope', '$location', '$http', 'AuthenticationService', function($rootScope, $location, $http, AuthenticationService){
+
+        this.authS = AuthenticationService;
+        var self = this;
+        
+        (function initController() {
+            AuthenticationService.getMenu();            
+        })();
+        
 }]);
     
     
