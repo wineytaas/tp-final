@@ -92,7 +92,7 @@ $app->get('/noticias', function(){
     $noticias[] = $noticiaTeste;
     $answer->auth_key = $authorization;
     $answer->noticias = $noticias;
-    if ($professorr || $secretariar) {
+    if ($alunor || $professorr || $secretariar) {
         echo json_encode($answer);
     } else {
         $error = new stdClass();
