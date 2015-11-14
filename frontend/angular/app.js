@@ -28,6 +28,13 @@ app.config(function($routeProvider) {
       redirectTo: "/login"
     }
   )
+  .when("/Pagina-Invalida", 
+    {
+      templateUrl: "invalida.view.html",
+      controller: "homeController",
+      controllerAs: "hCtrl"
+    }
+  )
   .otherwise(
     {
       redirectTo: "/Pagina-Invalida"    
