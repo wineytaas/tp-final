@@ -76,6 +76,32 @@ $app->get('/menu', function(){
     }
 });
 
+
+$app->get('/noticias', function(){
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
+    $alunor = AlunoDAO::checkAuthorizationKey($authorization)->result;
+    $professorr = ProfessorDAO::checkAuthorizationKey($authorization)->result;
+    $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
+    $answer = new stdClass();
+    $noticias = array();
+    $noticiaTeste = new stdClass();
+    $noticiaTeste->id = 1;
+    $noticiaTeste->descricao = "Início";
+    $noticiaTeste->noticia = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam eget magna id ex cursus tempus at vel diam. Donec hendrerit venenatis nisi vitae faucibus. Ut feugiat nibh sed sem varius, eget scelerisque justo pellentesque. Mauris a magna vel felis cursus ullamcorper. Curabitur eu lacinia tortor. Nunc tempus tempus feugiat. Donec nec porttitor quam. Nunc rutrum quam arcu, ac fermentum libero ultricies sed. Aliquam convallis rutrum eleifend. Vestibulum eu ex nec dolor faucibus semper.";
+    
+    $noticias[] = $noticiaTeste;
+    $answer->auth_key = $authorization;
+    $answer->noticias = $noticias;
+    if ($professorr || $secretariar) {
+        echo json_encode($answer);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);
+    }
+});
+
 $app->post('/login', function() {
     
     $request = \Slim\Slim::getInstance()->request();
