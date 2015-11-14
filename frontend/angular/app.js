@@ -16,6 +16,13 @@ app.config(function($routeProvider) {
       controllerAs: "lCtrl"
     }
   )
+  .when("/noticia/:noticiaid", 
+    {
+      templateUrl: "noticia.view.html",
+      controller: "noticiaController",
+      controllerAs: "nCtrl"
+    }
+  )
   .when("/logout", 
     {
       redirectTo: "/login"
@@ -94,6 +101,7 @@ app.factory('GeneralService', ['$http', '$cookieStore', '$rootScope', '$location
             });
         }
         
+        
 }]);
 
 app.controller('homeController',['$rootScope', '$location', '$http', 'AuthenticationService', 'GeneralService', function($rootScope, $location, $http, AuthenticationService, GeneralService){
@@ -108,7 +116,30 @@ app.controller('homeController',['$rootScope', '$location', '$http', 'Authentica
         })();
         
 }]);
-    
+
+app.controller('noticiaController',['$rootScope','$routeParams', '$location', '$http', 'AuthenticationService', 'GeneralService', function($rootScope, $routeParams, $location, $http, AuthenticationService, GeneralService){
+        this.noticia;
+        this.authS = AuthenticationService;
+        this.generalS = GeneralService;
+        var self = this;
+        
+        this.getNoticia = function(){            
+            $http.get('/backend/noticias/'+$routeParams.noticiaid).then(function(response){
+               if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+               }
+               self.noticia = response.data.noticia;
+            }, function(){
+            });
+        };
+        
+        (function initController() {
+            AuthenticationService.getMenu();   
+            GeneralService.getNoticias();
+            self.getNoticia();
+        })();
+        
+}]);    
     
 app.controller('loginController', ['$rootScope','$location','$http', '$interval', 'AuthenticationService',function($rootScope, $location, $http, $interval, AuthenticationService) {
     // acoes e propriedades do meu controller
