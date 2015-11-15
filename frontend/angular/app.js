@@ -44,6 +44,13 @@ app.config(function($routeProvider) {
       controllerAs: "nCtrl"
     }
   )
+  .when("/editarnoticia/:noticiaid", 
+    {
+      templateUrl: "editarnoticia.view.html",
+      controller: "editarnoticiaController",
+      controllerAs: "nCtrl"
+    }
+  )
   .when("/logout", 
     {
       redirectTo: "/login"
@@ -236,6 +243,50 @@ app.controller('novanoticiaController',['$rootScope','$routeParams', '$location'
         
         (function initController() {
             AuthenticationService.getMenu();  
+        })();
+        
+}]);    
+
+app.controller('editarnoticiaController',['$rootScope','$routeParams', '$location', '$http', '$interval', 'AuthenticationService', 'GeneralService', function($rootScope, $routeParams, $location, $http, $interval, AuthenticationService, GeneralService){
+        this.authS = AuthenticationService;
+        this.generalS = GeneralService;
+        this.noticia;
+        var self = this;
+        
+        this.getNoticia = function(){            
+            $http.get('/backend/noticias/'+$routeParams.noticiaid).then(function(response){
+               if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+               }
+               self.noticia = response.data.noticia;
+            }, function(){
+            });
+        }; 
+        
+        this.enviaNoticia = function(){
+            $("#btEnviar").attr("disabled","disabled");
+            $http.put('/backend/noticias/'+self.noticia.id,self.noticia).then(function(response){ 
+                if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+                    $("#btEnviar").removeAttr("disabled");
+                } else {
+
+                    $("#btEnviar").text("Redirecionando...");
+                    document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Notícia cadastrada com sucesso !</p>";
+             
+                    $interval(function(){                    
+                        $location.path("/gerenciarnoticias");
+                    },2000,1);   
+                }
+            }, function(){
+                document.getElementById("response").innerHTML = "<p class='alert-danger alert'>Erro ao tentar conectar banco de dados</p>";            
+                $("#btEnviar").removeAttr("disabled");
+            });
+        };
+        
+        (function initController() {
+            AuthenticationService.getMenu();  
+            self.getNoticia();
         })();
         
 }]);    
