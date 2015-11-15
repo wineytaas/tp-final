@@ -28,7 +28,7 @@ class ProfessorDAO {
 
     public static function getProfessorByLogin($login, $senha) {
         $connection = Connection::getConnection();
-        $sql = "SELECT * FROM as_professor WHERE login = '$login' AND senha = '$senha' ";
+        $sql = "SELECT * FROM as_professor WHERE login = '$login' AND senha = MD5('$senha') ";
         $result = mysqli_query($connection, $sql);
         $professor = mysqli_fetch_object($result);
         
@@ -38,7 +38,7 @@ class ProfessorDAO {
             $ar->result = false;
         } else {
             $ar->result = true;
-            $ar->auth_key = ProfessorDAO::generateKey($login, $senha);
+            $ar->auth_key = ProfessorDAO::generateKey($login, md5($senha));
             $ar->user = $professor;
         }
         return $ar;

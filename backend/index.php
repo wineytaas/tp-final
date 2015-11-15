@@ -253,7 +253,18 @@ $app->get('/alunos', function() {
 $app->get('/alunos/:id', function ($id) {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     //recupera o cliente
+    $alunor = AlunoDAO::checkAuthorizationKey($authorization);
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
+    if($id == 0){
+        if($alunor->result){
+            echo json_encode($alunor);
+        } else {
+            $error = new stdClass();
+            $error->error = 2;
+            $error->description = "Permissões insuficientes!";
+            echo json_encode($error); 
+        }
+    } else 
     if($secretariar){        
         $aluno = AlunoDAO::getAlunoById($id);
 

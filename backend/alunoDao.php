@@ -46,7 +46,7 @@ class AlunoDAO {
     
     public static function getAlunoByLogin($login, $senha) {
         $connection = Connection::getConnection();
-        $sql = "SELECT * FROM as_aluno WHERE login = '$login' AND senha = '$senha'";
+        $sql = "SELECT * FROM as_aluno WHERE login = '$login' AND senha = MD5('$senha')";
         $result = mysqli_query($connection, $sql);
         $aluno = mysqli_fetch_object($result);
         
@@ -56,7 +56,7 @@ class AlunoDAO {
             $ar->result = false;
         }else{
             $ar->result = true;
-            $ar->auth_key = AlunoDAO::generateKey($login, $senha);
+            $ar->auth_key = AlunoDAO::generateKey($login, md5($senha));
             $ar->user = $aluno;
         } 
         return $ar;

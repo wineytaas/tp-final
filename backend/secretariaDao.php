@@ -28,7 +28,7 @@ class SecretariaDAO {
 
     public static function getSecretariaByLogin($login, $senha) {
         $connection = Connection::getConnection();
-        $sql = "SELECT * FROM as_secretaria WHERE login = '$login' AND senha = '$senha' ";
+        $sql = "SELECT * FROM as_secretaria WHERE login = '$login' AND senha = MD5('$senha') ";
         $result = mysqli_query($connection, $sql);
         $secretaria = mysqli_fetch_object($result);
         
@@ -38,7 +38,7 @@ class SecretariaDAO {
             $ar->result = false;
         } else {
             $ar->result = true;
-            $ar->auth_key = SecretariaDAO::generateKey($login, $senha);
+            $ar->auth_key = SecretariaDAO::generateKey($login, md5($senha));
             $ar->user = $secretaria;
         }
         return $ar;
