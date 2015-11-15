@@ -49,7 +49,7 @@
                         <td>{{noticia.data}}</td>
                         <td><a href="#/noticia/{{noticia.id}}">{{noticia.descricao}}</a></td>
                         <td><a href="#/editarnoticia/{{noticia.id}}"><span class="glyphicon glyphicon-edit"></span></a></td>
-                        <td><a href="#/deletarnoticia/{{noticia.id}}"><span class="glyphicon glyphicon-remove"></span></a></td>
+                        <td><a href="" ng-click="gnCtrl.deletaNoticia(noticia.id)" ><span class="glyphicon glyphicon-remove"></span></a></td>
                     </tr>
                 </tbody>
           </table>

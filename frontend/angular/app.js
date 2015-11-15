@@ -162,6 +162,19 @@ app.controller('gnoticiasController',['$rootScope', '$location', '$http', 'Authe
         this.generalS = GeneralService;
         var self = this;
         
+        this.deletaNoticia = function(noticiaid){
+            $http.delete('/backend/noticias/'+noticiaid).then(function(response){ 
+                if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+                } else {
+                    document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Notícia deletada !</p>";
+                    GeneralService.getAllNoticias();
+                }
+            }, function(){
+                document.getElementById("response").innerHTML = "<p class='alert-danger alert'>Erro ao tentar conectar banco de dados</p>";            
+            });
+        };
+        
         (function initController() {
             AuthenticationService.getMenu();   
             GeneralService.getAllNoticias();
@@ -183,7 +196,8 @@ app.controller('noticiaController',['$rootScope','$routeParams', '$location', '$
                self.noticia = response.data.noticia;
             }, function(){
             });
-        };
+        };        
+        
         
         (function initController() {
             AuthenticationService.getMenu();   
