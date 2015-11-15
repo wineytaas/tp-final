@@ -37,6 +37,13 @@ app.config(function($routeProvider) {
       controllerAs: "gnCtrl"
     }
   )
+  .when("/novanoticia", 
+    {
+      templateUrl: "novanoticia.view.html",
+      controller: "novanoticiaController",
+      controllerAs: "nCtrl"
+    }
+  )
   .when("/logout", 
     {
       redirectTo: "/login"
@@ -181,6 +188,40 @@ app.controller('noticiaController',['$rootScope','$routeParams', '$location', '$
         (function initController() {
             AuthenticationService.getMenu();   
             self.getNoticia();
+        })();
+        
+}]);    
+
+
+app.controller('novanoticiaController',['$rootScope','$routeParams', '$location', '$http', 'AuthenticationService', 'GeneralService', function($rootScope, $routeParams, $location, $http, AuthenticationService, GeneralService){
+        this.authS = AuthenticationService;
+        this.generalS = GeneralService;
+        var self = this;
+        
+        
+        this.enviaNoticia = function(noticia){
+            $("#btEnviar").attr("disabled","disabled");
+            $http.post('/backend/noticias',noticia).then(function(response){ 
+                if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+                    $("#btLogin").removeAttr("disabled");
+                } else {
+
+                    $("#btEnviar").text("Redirecionando...");
+                    document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Notícia cadastrada com sucesso !</p>";
+             
+                    $interval(function(){                    
+                        $location.path("/gerenciarnoticias");
+                    },2000);   
+                }
+            }, function(){
+                document.getElementById("response").innerHTML = "<p class='alert-danger alert'>Erro ao tentar conectar banco de dados</p>";            
+                $("#btEnviar").removeAttr("disabled");
+            });
+        };
+        
+        (function initController() {
+            AuthenticationService.getMenu();  
         })();
         
 }]);    
