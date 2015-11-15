@@ -76,8 +76,8 @@ class NoticiaDAO {
         
         $ar = new stdClass();
         if ($result === FALSE) {
-            $ar->result = false;
-            $ar->mensagem = "Erro ao deletar noticia!";
+            $ar->error = 3;
+            $ar->description = "Erro ao deletar noticia!";
         } else {
             $ar->result = true;
             $ar->mensagem = "Noticia deletada!";
