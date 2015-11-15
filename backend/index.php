@@ -172,6 +172,29 @@ $app->post('/noticias', function() {
     
 });
 
+$app->put('/noticias/:id', function ($id) {
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
+    
+    //recupera o cliente
+    $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
+    if($secretariar){        
+        // recupera o request
+        $request = \Slim\Slim::getInstance()->request();
+
+        // atualiza o aluno
+        $noticiaB = json_decode($request->getBody());
+        $noticia = NoticiaDAO::updateNoticia($noticiaB, $id);
+
+        echo json_encode($noticia);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);
+    }
+});
+
+
 $app->delete('/noticias/:id', function($id) {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     

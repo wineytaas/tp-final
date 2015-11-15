@@ -60,13 +60,13 @@ class NoticiaDAO {
     }
 
 
-    public static function updateNoticia($professor, $id) {
+    public static function updateNoticia($noticia, $id) {
         $connection = Connection::getConnection();
-        $sql = "UPDATE as_professor SET nome='$professor->nome' , logradouro='$professor->logradouro' ,numero='$professor->numero' ,bairro='$professor->bairro' ,cidade='$professor->cidade' ,cep='$professor->cep' , salario = '$professor->salario', login = '$professor->login', senha = '$professor->senha' WHERE id = '$id' ";
+        $sql = "UPDATE as_noticia SET descricao='$noticia->descricao' , noticia='$noticia->noticia' WHERE id = '$id' ";
         $result = mysqli_query($connection, $sql);
 
-        $professorAtualizado = ProfessorDAO::getProfessorById($id);
-        return $professorAtualizado;
+        $noticiaAtualizada = NoticiaDAO::getNoticiaById($id);
+        return $noticiaAtualizada;
     }
 
     public static function deleteNoticia($id) {
