@@ -193,7 +193,7 @@ app.controller('noticiaController',['$rootScope','$routeParams', '$location', '$
 }]);    
 
 
-app.controller('novanoticiaController',['$rootScope','$routeParams', '$location', '$http', 'AuthenticationService', 'GeneralService', function($rootScope, $routeParams, $location, $http, AuthenticationService, GeneralService){
+app.controller('novanoticiaController',['$rootScope','$routeParams', '$location', '$http', '$interval', 'AuthenticationService', 'GeneralService', function($rootScope, $routeParams, $location, $http, $interval, AuthenticationService, GeneralService){
         this.authS = AuthenticationService;
         this.generalS = GeneralService;
         var self = this;
@@ -204,7 +204,7 @@ app.controller('novanoticiaController',['$rootScope','$routeParams', '$location'
             $http.post('/backend/noticias',noticia).then(function(response){ 
                 if(response.data.error !== undefined) {
                    AuthenticationService.treatError(response.data);
-                    $("#btLogin").removeAttr("disabled");
+                    $("#btEnviar").removeAttr("disabled");
                 } else {
 
                     $("#btEnviar").text("Redirecionando...");
@@ -212,7 +212,7 @@ app.controller('novanoticiaController',['$rootScope','$routeParams', '$location'
              
                     $interval(function(){                    
                         $location.path("/gerenciarnoticias");
-                    },2000);   
+                    },2000,1);   
                 }
             }, function(){
                 document.getElementById("response").innerHTML = "<p class='alert-danger alert'>Erro ao tentar conectar banco de dados</p>";            
@@ -247,7 +247,7 @@ app.controller('loginController', ['$rootScope','$location','$http', '$interval'
                 
                 $interval(function(){                    
                     $location.path("/");
-                },2000);
+                },2000,1);
                 
   
             } else {
