@@ -31,7 +31,7 @@ class SecretariaDAO {
         $sql = "SELECT * FROM as_secretaria WHERE login = '$login' AND senha = MD5('$senha') ";
         $result = mysqli_query($connection, $sql);
         $secretaria = mysqli_fetch_object($result);
-        
+        unset($secretaria->senha);
         $numrows = mysqli_num_rows($result);
         $ar = new stdClass();
         if ($numrows == 0) {

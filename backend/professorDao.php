@@ -31,7 +31,7 @@ class ProfessorDAO {
         $sql = "SELECT * FROM as_professor WHERE login = '$login' AND senha = MD5('$senha') ";
         $result = mysqli_query($connection, $sql);
         $professor = mysqli_fetch_object($result);
-        
+        unset($professor->senha);
         $numrows = mysqli_num_rows($result);
         $ar = new stdClass();
         if ($numrows == 0) {
