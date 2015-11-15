@@ -272,7 +272,7 @@ app.controller('editarnoticiaController',['$rootScope','$routeParams', '$locatio
                 } else {
 
                     $("#btEnviar").text("Redirecionando...");
-                    document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Notícia cadastrada com sucesso !</p>";
+                    document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Notícia editada com sucesso !</p>";
              
                     $interval(function(){                    
                         $location.path("/gerenciarnoticias");
