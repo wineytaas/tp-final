@@ -2,19 +2,22 @@
 
 class NoticiaDAO {
 
-    public static function addNoticia($professor) {
+    public static function addNoticia($noticia,$secretaria_id) {
         $connection = Connection::getConnection();
-        $sql = "INSERT INTO as_professor (nome,logradouro,numero,bairro,cidade,cep,salario,complemento,login,senha)"
-                . "VALUES('$professor->nome' ,'$professor->logradouro' ,'$professor->numero' , "
-                . "'$professor->bairro' ,'$professor->cidade' ,'$professor->cep','$professor->salario' ,'$professor->complemento' ,'$professor->login','$professor->senha')";
+        $sql = "INSERT INTO as_noticia (descricao,data,noticia,secretaria_id)"
+                . "VALUES('$noticia->descricao' ,CURDATE() ,'$noticia->noticia' , "
+                . "'$secretaria_id')";
         $result = mysqli_query($connection, $sql);
-
-        $sql = "SELECT * FROM `as_professor` WHERE login = '$professor->login'";
-        $result = mysqli_query($connection, $sql);
-        $professor->id = mysqli_fetch_object($result)->id;
-
-        $novoProfessor = ProfessorDAO::getProfessorById($professor->id);
-        return $novoProfessor;
+        
+        $ar = new stdClass();
+        if($result){
+            $ar->result = true;
+            $ar->descricao = "Notícia inserida.";
+        } else {
+            $ar->error = 3;
+            $ar->description = "Erro na execução da query.";
+        }
+        return $ar;
     }
 
     public static function getNoticiaById($id) {
