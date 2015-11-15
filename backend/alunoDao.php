@@ -11,7 +11,6 @@ class AlunoDAO {
         $alunos = array();
         while ($aluno = mysqli_fetch_object($result)) {
             if ($aluno != null) {
-                unset($aluno->senha);
                 $alunos[] = $aluno;
             }
         }
@@ -51,7 +50,6 @@ class AlunoDAO {
         $sql = "SELECT * FROM as_aluno WHERE login = '$login' AND senha = MD5('$senha')";
         $result = mysqli_query($connection, $sql);
         $aluno = mysqli_fetch_object($result);
-        unset($aluno->senha);
         $numrows = mysqli_num_rows($result);
         $ar = new stdClass();
         if ($numrows == 0) {

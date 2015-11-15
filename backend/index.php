@@ -257,7 +257,7 @@ $app->get('/alunos/:id', function ($id) {
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
     if($id == 0){
         if($alunor->result){
-            echo json_encode($alunor);
+            echo json_encode($alunor->user);
         } else {
             $error = new stdClass();
             $error->error = 2;
