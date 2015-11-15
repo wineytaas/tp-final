@@ -153,8 +153,15 @@ $app->post('/noticias', function() {
     if($secretariar->result){        
         // insere o cliente
         $nnoticiaBody = json_decode($request->getBody());
-        $nnoticia = NoticiaDAO::addNoticia($nnoticiaBody,$secretariar->user->id);
-        echo json_encode($nnoticia);
+        if(isset($nnoticiaBody->descricao) && isset($nnoticiaBody->noticia)){            
+            $nnoticia = NoticiaDAO::addNoticia($nnoticiaBody,$secretariar->user->id);
+            echo json_encode($nnoticia);
+        } else {
+            $error = new stdClass();
+            $error->error = 2;
+            $error->description = "Preencha todos os campos!";
+            echo json_encode($error);              
+        }
     } else {
         $error = new stdClass();
         $error->error = 2;
