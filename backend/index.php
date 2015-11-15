@@ -51,6 +51,9 @@ $app->get('/menu', function(){
     }
     
     if($secretariar){        
+        $optNoticias = new stdClass();
+        $optNoticias->descricao = "Gerenciar Notícias";
+        $optNoticias->url = "#/gerenciarnoticias";
         $optAlunos = new stdClass();
         $optAlunos->descricao = "Gerenciar Alunos";
         $optAlunos->url = "#/gerenciaralunos";
@@ -60,6 +63,7 @@ $app->get('/menu', function(){
         $optTurmas = new stdClass();
         $optTurmas->descricao = "Gerenciar Turmas";
         $optTurmas->url = "#/gerenciarturmas";
+        $menu[] = $optNoticias;
         $menu[] = $optAlunos;
         $menu[] = $optProfessores;
         $menu[] = $optTurmas;
@@ -89,6 +93,27 @@ $app->get('/noticias', function(){
     $answer->auth_key = $authorization;
     $answer->noticias = $noticias;
     if ($alunor || $professorr || $secretariar) {
+        echo json_encode($answer);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);
+    }
+});
+
+$app->get('/noticiasa', function(){
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
+    $alunor = AlunoDAO::checkAuthorizationKey($authorization)->result;
+    $professorr = ProfessorDAO::checkAuthorizationKey($authorization)->result;
+    $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
+    $answer = new stdClass();
+    $noticias = NoticiaDAO::getAlll();
+    
+    $answer->auth_key = $authorization;
+    $answer->noticias = $noticias;
+    if ($alunor || $professorr || $secretariar) {
+        $answer->edit_permission = $secretariar;
         echo json_encode($answer);
     } else {
         $error = new stdClass();

@@ -40,6 +40,22 @@ class NoticiaDAO {
         }
         return $noticias;
     }
+    
+    public static function getAlll() {
+        $connection = Connection::getConnection();
+        $sql = "SELECT as_noticia.id,descricao,DATE_FORMAT(data, '%d/%m') as data,noticia,as_secretaria.nome as autor FROM as_noticia JOIN as_secretaria ON as_noticia.secretaria_id = as_secretaria.id GROUP BY as_noticia.id ORDER BY as_noticia.data";
+
+        // recupera todos os categorias
+        $result = mysqli_query($connection, $sql);
+        $noticias = array();
+        while ($noticia = mysqli_fetch_object($result)) {
+            if ($noticia != null) {
+                $noticias[] = $noticia;
+            }
+        }
+        return $noticias;
+    }
+
 
     public static function updateNoticia($professor, $id) {
         $connection = Connection::getConnection();

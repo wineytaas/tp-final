@@ -23,6 +23,20 @@ app.config(function($routeProvider) {
       controllerAs: "nCtrl"
     }
   )
+  .when("/gerenciarnoticias", 
+    {
+      templateUrl: "gnoticias.view.html",
+      controller: "gnoticiasController",
+      controllerAs: "gnCtrl"
+    }
+  )
+  .when("/noticias", 
+    {
+      templateUrl: "noticias.view.html",
+      controller: "gnoticiasController",
+      controllerAs: "gnCtrl"
+    }
+  )
   .when("/logout", 
     {
       redirectTo: "/login"
@@ -95,11 +109,22 @@ app.factory('GeneralService', ['$http', '$cookieStore', '$rootScope', '$location
     var service = {};
     service.noticias=[];
     service.getNoticias = getNoticias;
+    service.getAllNoticias = getAllNoticias;
     
     return service;
     
         function getNoticias(){            
             $http.get('/backend/noticias').then(function(response){
+               service.noticias = response.data.noticias;
+               if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+               }
+            }, function(){
+            });
+        }
+        
+        function getAllNoticias(){            
+            $http.get('/backend/noticiasa').then(function(response){
                service.noticias = response.data.noticias;
                if(response.data.error !== undefined) {
                    AuthenticationService.treatError(response.data);
@@ -124,6 +149,19 @@ app.controller('homeController',['$rootScope', '$location', '$http', 'Authentica
         
 }]);
 
+app.controller('gnoticiasController',['$rootScope', '$location', '$http', 'AuthenticationService', 'GeneralService', function($rootScope, $location, $http, AuthenticationService, GeneralService){
+
+        this.authS = AuthenticationService;
+        this.generalS = GeneralService;
+        var self = this;
+        
+        (function initController() {
+            AuthenticationService.getMenu();   
+            GeneralService.getAllNoticias();
+        })();
+        
+}]);
+
 app.controller('noticiaController',['$rootScope','$routeParams', '$location', '$http', 'AuthenticationService', 'GeneralService', function($rootScope, $routeParams, $location, $http, AuthenticationService, GeneralService){
         this.noticia;
         this.authS = AuthenticationService;
@@ -142,7 +180,6 @@ app.controller('noticiaController',['$rootScope','$routeParams', '$location', '$
         
         (function initController() {
             AuthenticationService.getMenu();   
-            GeneralService.getNoticias();
             self.getNoticia();
         })();
         

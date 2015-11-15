@@ -18,7 +18,7 @@
                   
                     <ul class="nav navbar-nav">                        
                     
-                    <li ng-repeat="meni in homeCtrl.authS.menu"><a href="{{meni.url}}">{{meni.descricao}}</a></li>
+                    <li ng-repeat="meni in gnCtrl.authS.menu"><a href="{{meni.url}}">{{meni.descricao}}</a></li>
                   </ul>
             
                 </div><!-- /.navbar-collapse -->
@@ -27,25 +27,35 @@
       
     </div>
     <div class="row">
-        <div class="col-xs-12 col-md-6"><h3>Notícias</h3>
+        <div class="col-xs-12">
+             <div id="custom-search-input">
+                <div class="input-group col-md-12">
+                    <input type="search" ng-model="searchText.$" class="form-control input-lg" placeholder="Buscar" />
+                    <span class="input-group-btn">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12"><h3>Notícias</h3>
             <table class="table table-hover text-left">
                 <thead>
                     <tr><th>#</th><th>Data</th><th>Descrição</th></tr>                
                 </thead>
                 <tbody>
-                    <tr ng-repeat="noticia in homeCtrl.generalS.noticias">
+                    <tr ng-repeat="noticia in gnCtrl.generalS.noticias | filter:searchText">
                         
                         <td>{{$index + 1}}</td>
                         <td>{{noticia.data}}</td>
                         <td><a href="#/noticia/{{noticia.id}}">{{noticia.descricao}}</a></td>
                     </tr>
                 </tbody>
-            </table>
-            <a href="#/noticias" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Ver todas</a>
+          </table>
         </div>
-        <div class="col-xs-12 col-md-6"><h3>Seção</h3><br>Texto da segunda divisória.</div>
     </div><br>
-    
+    <div class="row">
+        <a href="#/" class="btn btn-primary"><span class="glyphicon glyphicon-arrow-left"></span> Voltar</a>
+    </div><br>
     <div id="response" class="row"></div>
     <div class="row">
         <img src="img/logo.jpg" class="logo">
