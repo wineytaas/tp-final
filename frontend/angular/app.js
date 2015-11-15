@@ -51,6 +51,13 @@ app.config(function($routeProvider) {
       controllerAs: "nCtrl"
     }
   )
+  .when("/meusdados", 
+    {
+      templateUrl: "meusdados.view.html",
+      controller: "meusdadosController",
+      controllerAs: "nCtrl"
+    }
+  )
   .when("/logout", 
     {
       redirectTo: "/login"
@@ -290,6 +297,50 @@ app.controller('editarnoticiaController',['$rootScope','$routeParams', '$locatio
         })();
         
 }]);    
+
+app.controller('meusdadosController',['$rootScope','$routeParams', '$location', '$http', '$interval', 'AuthenticationService', 'GeneralService', function($rootScope, $routeParams, $location, $http, $interval, AuthenticationService, GeneralService){
+        this.authS = AuthenticationService;
+        this.generalS = GeneralService;
+        this.aluno;
+        var self = this;
+        
+        this.getAluno = function(){            
+            $http.get('/backend/alunos/0').then(function(response){
+               if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+               }
+               self.aluno = response.data;
+            }, function(){
+            });
+        }; 
+        
+        this.enviaAluno = function(){
+            $("#btEnviar").attr("disabled","disabled");
+            $http.put('/backend/noticias/'+self.noticia.id,self.noticia).then(function(response){ 
+                if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+                    $("#btEnviar").removeAttr("disabled");
+                } else {
+
+                    $("#btEnviar").text("Redirecionando...");
+                    document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Notícia editada com sucesso !</p>";
+             
+                    $interval(function(){                    
+                        $location.path("/");
+                    },2000,1);   
+                }
+            }, function(){
+                document.getElementById("response").innerHTML = "<p class='alert-danger alert'>Erro ao tentar conectar banco de dados</p>";            
+                $("#btEnviar").removeAttr("disabled");
+            });
+        };
+        
+        (function initController() {
+            AuthenticationService.getMenu();  
+            self.getAluno();
+        })();
+        
+}]); 
     
 app.controller('loginController', ['$rootScope','$location','$http', '$interval', 'AuthenticationService',function($rootScope, $location, $http, $interval, AuthenticationService) {
     // acoes e propriedades do meu controller
