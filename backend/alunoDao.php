@@ -25,13 +25,13 @@ class AlunoDAO {
         $alunos = array();
         while ($aluno = mysqli_fetch_object($result)) {
             if ($aluno != null) {
-                $t = TurmaDAO::getTurmaById($turmaId);
-                $turma = mysqli_query($connection, $t);
-                $aluno->turma = $aluno = mysqli_fetch_object($turma);
                 $alunos[] = $aluno;
             }
         }
-        return $alunos;
+        $t = TurmaDAO::getTurmaById($turmaId);
+        $ar->turma = $t;
+        $ar->alunos = $alunos;
+        return $ar;
     }
 
     public static function checkAuthorizationKey($key) {
