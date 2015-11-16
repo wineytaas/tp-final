@@ -8,6 +8,7 @@ require 'alunoDao.php';
 require 'professorDao.php';
 require 'secretariaDao.php';
 require 'noticiaDao.php';
+date_default_timezone_set ("America/Sao_Paulo");
 
 
 $app = new \Slim\Slim();
