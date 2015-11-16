@@ -254,11 +254,10 @@ $app->get('/alunos', function() {
         echo json_encode($cl);
     }else if($alunor->result){        
         // recupera todos os clientes
-        $alunos = AlunoDAO::getAlunoByTurma($alunor->turma_id);
-        $cl = new stdClass();
-        $cl->alunos = $alunos;
-        $cl->auth_key = $authorization;
-        echo json_encode($cl);
+        $alunos = AlunoDAO::getAlunoByTurma($alunor->user->turma_id);
+        
+        $alunos->auth_key = $authorization;
+        echo json_encode($alunos);
     } else {
         $error = new stdClass();
         $error->error = 2;

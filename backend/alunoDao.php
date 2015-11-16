@@ -20,15 +20,17 @@ class AlunoDAO {
     public static function getAlunoByTurma($turmaId) {
 
         $connection = Connection::getConnection();
-        $sql = "SELECT `nome`, `turma_id` FROM `as_aluno` WHERE `turma_id`= $turmaId";
+        $sql = "SELECT nome FROM as_aluno WHERE turma_id=$turmaId";
         $result = mysqli_query($connection, $sql);
         $alunos = array();
+        
         while ($aluno = mysqli_fetch_object($result)) {
             if ($aluno != null) {
                 $alunos[] = $aluno;
             }
         }
         $t = TurmaDAO::getTurmaById($turmaId);
+        $ar = new stdClass();
         $ar->turma = $t;
         $ar->alunos = $alunos;
         return $ar;
