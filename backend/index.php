@@ -82,6 +82,7 @@ $app->get('/menu', function(){
     }
 });
 
+// Noticias
 
 $app->get('/noticias', function(){
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
@@ -215,6 +216,8 @@ $app->delete('/noticias/:id', function($id) {
     }
 });
 
+// Login
+
 $app->post('/login', function() {
     
     $request = \Slim\Slim::getInstance()->request();
@@ -304,14 +307,48 @@ $app->post('/alunos', function() {
 
 $app->put('/alunos/:id', function ($id) {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
+    //recupera o cliente
+    $alunor = AlunoDAO::checkAuthorizationKey($authorization);
+    $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
     // recupera o request
     $request = \Slim\Slim::getInstance()->request();
 
     // atualiza o aluno
     $aluno = json_decode($request->getBody());
-    $aluno = AlunoDAO::updateAluno($aluno, $id);
+    
+    
+    if($id == 0){
+        if($alunor->result){
+            unset($aluno->senha);
+            if(isset($aluno->novaSenha) && isset($aluno->novaSenha2) && !empty($aluno->novaSenha) && !empty($aluno->novaSenha2)){
+                if ($aluno->novaSenha == $aluno->novaSenha2) {
+                    $aluno->senha = md5($aluno->novaSenha);
+                } else {
+                    $error = new stdClass();
+                    $error->error = 2;
+                    $error->description = "As senhas não conferem!";
+                    echo json_encode($error); 
+                }
+            }
+            $alunof = AlunoDAO::updateAluno($aluno, $alunor->user->id);
+            if(!isset($error))echo json_encode($alunof);
+        } else {
+            $error = new stdClass();
+            $error->error = 2;
+            $error->description = "Permissões insuficientes!";
+            echo json_encode($error); 
+        }
+    } else 
+    if($secretariar){        
+        $aluno = AlunoDAO::updateAluno($aluno, $id);
 
-    echo json_encode($aluno );
+        echo json_encode($aluno);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);        
+    }
 });
 
 $app->delete('/alunos/:id', function($id) {
