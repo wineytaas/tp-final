@@ -316,14 +316,14 @@ app.controller('meusdadosController',['$rootScope','$routeParams', '$location', 
         
         this.enviaAluno = function(){
             $("#btEnviar").attr("disabled","disabled");
-            $http.put('/backend/noticias/'+self.noticia.id,self.noticia).then(function(response){ 
+            $http.put('/backend/alunos/0',self.aluno).then(function(response){ 
                 if(response.data.error !== undefined) {
                    AuthenticationService.treatError(response.data);
                     $("#btEnviar").removeAttr("disabled");
                 } else {
 
                     $("#btEnviar").text("Redirecionando...");
-                    document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Notícia editada com sucesso !</p>";
+                    document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Dados alterados !</p>";
              
                     $interval(function(){                    
                         $location.path("/");
