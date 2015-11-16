@@ -1,7 +1,7 @@
 <?php
 
 class AlunoDAO {
-    
+
     public static function getAll() {
         $connection = Connection::getConnection();
         $sql = "SELECT * FROM as_aluno";
@@ -16,36 +16,40 @@ class AlunoDAO {
         }
         return $alunos;
     }
-    
-    public static function getAlunoByTurma($turmaId){
-        
+
+    public static function getAlunoByTurma($turmaId) {
+
         $connection = Connection::getConnection();
         $sql = "SELECT `nome`, `turma_id` FROM `as_aluno` WHERE `turma_id`= $turmaId";
         $result = mysqli_query($connection, $sql);
-        $aluno = mysqli_fetch_object($result);
-        
-        $turma = TurmaDAO::getTurmaById($turmaId);
-        $aluno->turma = $turma;
-
-        return $aluno;   
+        $alunos = array();
+        while ($aluno = mysqli_fetch_object($result)) {
+            if ($aluno != null) {
+                $t = TurmaDAO::getTurmaById($turmaId);
+                $turma = mysqli_query($connection, $t);
+                $aluno->turma = $aluno = mysqli_fetch_object($turma);
+                $alunos[] = $aluno;
+            }
+        }
+        return $alunos;
     }
-    
-    public static function checkAuthorizationKey($key){
+
+    public static function checkAuthorizationKey($key) {
         $alunos = AlunoDAO::getAll();
         $ar = new stdClass();
         $ar->result = false;
-        foreach($alunos as $aluno){
+        foreach ($alunos as $aluno) {
             $genKey = AlunoDAO::generateKey($aluno->login, $aluno->senha);
-            if($genKey == $key) {
+            if ($genKey == $key) {
                 $ar->result = true;
                 $ar->user = $aluno;
             }
         }
         return $ar;
     }
-    
-    public static function generateKey($user,$password){
-        return md5("aluno".$user.$password.date("d"));
+
+    public static function generateKey($user, $password) {
+        return md5("aluno" . $user . $password . date("d"));
     }
 
     public static function getAlunoById($id) {
@@ -57,7 +61,7 @@ class AlunoDAO {
 
         return $aluno;
     }
-    
+
     public static function getAlunoByLogin($login, $senha) {
         $connection = Connection::getConnection();
         $sql = "SELECT * FROM as_aluno WHERE login = '$login' AND senha = MD5('$senha')";
@@ -67,24 +71,25 @@ class AlunoDAO {
         $ar = new stdClass();
         if ($numrows == 0) {
             $ar->result = false;
-        }else{
+        } else {
             $ar->result = true;
             $ar->auth_key = AlunoDAO::generateKey($login, md5($senha));
             $ar->user = $aluno;
-        } 
+        }
         return $ar;
     }
 
-    
     public static function updateAluno($aluno, $id) {
         $connection = Connection::getConnection();
-        if(isset($aluno->senha)) $sql = "UPDATE as_aluno SET nome='$aluno->nome' ,rg='$aluno->rg' ,cpf='$aluno->cpf' ,logradouro='$aluno->logradouro' ,numero='$aluno->numero' ,bairro='$aluno->bairro' ,cidade='$aluno->cidade' ,cep='$aluno->cep', senha='$aluno->senha' WHERE id = $id";
-        if(!isset($aluno->senha)) $sql = "UPDATE as_aluno SET nome='$aluno->nome' ,rg='$aluno->rg' ,cpf='$aluno->cpf' ,logradouro='$aluno->logradouro' ,numero='$aluno->numero' ,bairro='$aluno->bairro' ,cidade='$aluno->cidade' ,cep='$aluno->cep' WHERE id = $id";
+        if (isset($aluno->senha))
+            $sql = "UPDATE as_aluno SET nome='$aluno->nome' ,rg='$aluno->rg' ,cpf='$aluno->cpf' ,logradouro='$aluno->logradouro' ,numero='$aluno->numero' ,bairro='$aluno->bairro' ,cidade='$aluno->cidade' ,cep='$aluno->cep', senha='$aluno->senha' WHERE id = $id";
+        if (!isset($aluno->senha))
+            $sql = "UPDATE as_aluno SET nome='$aluno->nome' ,rg='$aluno->rg' ,cpf='$aluno->cpf' ,logradouro='$aluno->logradouro' ,numero='$aluno->numero' ,bairro='$aluno->bairro' ,cidade='$aluno->cidade' ,cep='$aluno->cep' WHERE id = $id";
         $result = mysqli_query($connection, $sql);
         $alunoAtualizado = AlunoDAO::getAlunoById($id);
         return $alunoAtualizado;
     }
-    
+
     public static function updateAlunoCompleto($aluno, $id) {
         $connection = Connection::getConnection();
         $sql = "UPDATE as_aluno SET turma_id='$aluno->turma_id', nome='$aluno->nome' ,rg='$aluno->rg' ,cpf='$aluno->cpf' ,logradouro='$aluno->logradouro' ,numero='$aluno->numero' ,bairro='$aluno->bairro' ,cidade='$aluno->cidade' ,cep='$aluno->cep' ,parcelaspagas='$aluno->parcelaspagas' ,parcelastotais='$aluno->parcelastotais' ,valortotal='$aluno->valortotal',login='$aluno->login',senha='$aluno->senha' WHERE id = $id";
@@ -107,7 +112,7 @@ class AlunoDAO {
             $ar->result = true;
             $ar->mensagem = "Professor deletado!";
         }
-        
+
         return $ar;
     }
 
