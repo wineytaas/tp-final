@@ -17,6 +17,19 @@ class AlunoDAO {
         return $alunos;
     }
     
+    public static function getAlunoByTurma($turmaId){
+        
+        $connection = Connection::getConnection();
+        $sql = "SELECT `nome`, `turma_id` FROM `as_aluno` WHERE `turma_id`= $turmaId";
+        $result = mysqli_query($connection, $sql);
+        $aluno = mysqli_fetch_object($result);
+        
+        $turma = TurmaDAO::getTurmaById($turmaId);
+        $aluno->turma = $turma;
+
+        return $aluno;   
+    }
+    
     public static function checkAuthorizationKey($key){
         $alunos = AlunoDAO::getAll();
         $ar = new stdClass();

@@ -33,6 +33,9 @@ $app->get('/menu', function(){
         $optDados = new stdClass();
         $optDados->descricao = "Meus dados";
         $optDados->url = "#/meusdados";
+        $optTurma = new stdClass();
+        $optTurma->descricao = "Minha Turma";
+        $optTurma->url = "#/minhaturma";
         $optNotas = new stdClass();
         $optNotas->descricao = "Minhas notas";
         $optNotas->url = "#/minhasnotas";
@@ -239,9 +242,18 @@ $app->get('/alunos', function() {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
+    $alunor = AlunoDAO::checkAuthorizationKey($authorization);
+    
     if($secretariar){        
         // recupera todos os clientes
         $alunos = AlunoDAO::getAll();
+        $cl = new stdClass();
+        $cl->alunos = $alunos;
+        $cl->auth_key = $authorization;
+        echo json_encode($cl);
+    }else if($alunor->result){        
+        // recupera todos os clientes
+        $alunos = AlunoDAO::getAlunoByTurma($alunor->turma_id);
         $cl = new stdClass();
         $cl->alunos = $alunos;
         $cl->auth_key = $authorization;
