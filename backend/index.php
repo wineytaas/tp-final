@@ -40,6 +40,7 @@ $app->get('/menu', function(){
         $optNotas->descricao = "Minhas notas";
         $optNotas->url = "#/minhasnotas";
         $menu[] = $optDados;
+        $menu[] = $optTurma;
         $menu[] = $optNotas;
     }
     
