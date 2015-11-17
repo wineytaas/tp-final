@@ -30,6 +30,13 @@ app.config(function($routeProvider) {
       controllerAs: "gnCtrl"
     }
   )
+  .when("/gerenciaralunos", 
+    {
+      templateUrl: "galunos.view.html",
+      controller: "galunosController",
+      controllerAs: "gnCtrl"
+    }
+  )
   .when("/noticias", 
     {
       templateUrl: "noticias.view.html",
@@ -206,6 +213,43 @@ app.controller('gnoticiasController',['$rootScope', '$location', '$http', 'Authe
         (function initController() {
             AuthenticationService.getMenu();   
             GeneralService.getAllNoticias();
+        })();
+        
+}]);
+
+app.controller('galunosController',['$rootScope', '$location', '$http', 'AuthenticationService', 'GeneralService', function($rootScope, $location, $http, AuthenticationService, GeneralService){
+
+        this.authS = AuthenticationService;
+        this.generalS = GeneralService;
+        this.alunos = [];
+        var self = this;
+        
+        this.deletaAluno = function(alunoid){
+            $http.delete('/backend/alunos/'+alunoid).then(function(response){ 
+                if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+                } else {
+                    document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Aluno deletado !</p>";
+                    GeneralService.getAllNoticias();
+                }
+            }, function(){
+                document.getElementById("response").innerHTML = "<p class='alert-danger alert'>Erro ao tentar conectar banco de dados</p>";            
+            });
+        };
+        
+        this.getAllAlunos = function(){            
+            $http.get('/backend/alunos').then(function(response){
+               self.alunos = response.data.alunos;
+               if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+               }
+            }, function(){
+            });
+        };
+        
+        (function initController() {
+            AuthenticationService.getMenu();   
+            self.getAllAlunos();
         })();
         
 }]);
