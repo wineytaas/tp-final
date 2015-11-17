@@ -544,6 +544,8 @@ $app->get('/turmas/:id', function ($id) {
     if ($secretariar) {
         //recupera o cliente
         $turma = TurmaDAO::getTurmaById($id);
+        $turma->professor = ProfessorDAO::getProfessorById($turma->professor_id);
+        $turma->alunos = AlunoDAO::getAlunoByTurma($id);
 
         echo json_encode($turma);
     } else {
