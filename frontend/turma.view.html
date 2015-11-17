@@ -44,7 +44,7 @@
                     <tr><th>#</th><th>Aluno</th></tr>                
                 </thead>
                 <tbody>
-                    <tr ng-repeat="aluno in tCtrl.turma.alunos | filter:searchText">
+                    <tr ng-repeat="aluno in tCtrl.turma.alunos.alunos | filter:searchText">
                         
                         <td>{{$index + 1}}</td>
                         <td>{{aluno.nome}}</td>
@@ -54,7 +54,7 @@
         </div>
     </div><br>
     <div class="row">
-        <a href="#/" class="btn btn-primary"><span class="glyphicon glyphicon-arrow-left"> Voltar</span></a>
+        <a href="#/gerenciarturmas" class="btn btn-primary"><span class="glyphicon glyphicon-arrow-left"> Voltar</span></a>
     </div><br>
     <div id="response" class="row"></div>
     <div class="row">
