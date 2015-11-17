@@ -44,10 +44,10 @@ class AlunoDAO {
         $ar = new stdClass();
         $ar->result = false;
         foreach ($alunos as $aluno) {
-            $genKey = AlunoDAO::generateKey($aluno->login, $aluno->senha);
+            $genKey = AlunoDAO::generateKey($aluno->aluno->login, $aluno->aluno->senha);
             if ($genKey == $key) {
                 $ar->result = true;
-                $ar->user = $aluno;
+                $ar->user = $aluno->aluno;
             }
         }
         return $ar;
@@ -124,7 +124,8 @@ class AlunoDAO {
     public static function addAluno($aluno) {
         $connection = Connection::getConnection();
         $sql = "INSERT INTO as_aluno (nome,rg,cpf,logradouro,numero,bairro,cidade,cep,parcelaspagas,parcelastotais,valortotal,login,senha,turma_id)"
-                . " VALUES('$aluno->nome' ,'$aluno->rg' ,'$aluno->cpf','$aluno->logradouro' ,'$aluno->numero' ,'$aluno->bairro' ,'$aluno->cidade' ,'$aluno->cep' ,'0' ,'$aluno->parcelastotais' ,'$aluno->valortotal','$aluno->login','$aluno->senha','$aluno->turma_id')";
+                . " VALUES('$aluno->nome' ,'$aluno->rg' ,'$aluno->cpf','$aluno->logradouro' ,'$aluno->numero' ,'$aluno->bairro' ,'$aluno->cidade' ,"
+                . " '$aluno->cep' ,'0' ,'$aluno->parcelastotais' ,'$aluno->valortotal','$aluno->login','$aluno->senha','$aluno->turma_id')";
         $result = mysqli_query($connection, $sql);
 
         if (!$result) {
