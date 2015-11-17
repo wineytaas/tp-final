@@ -381,7 +381,7 @@ $app->put('/alunos/:id', function ($id) {
             }
         }
         if (!isset($error)) {
-            $aluno = AlunoDAO::updateAluno($aluno, $id);
+            $aluno = AlunoDAO::updateAlunoCompleto($aluno, $id);
             echo json_encode($aluno);
         }
     } else {
