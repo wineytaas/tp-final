@@ -23,6 +23,20 @@ app.config(function($routeProvider) {
       controllerAs: "nCtrl"
     }
   )
+  .when("/aluno/:alunoid", 
+    {
+      templateUrl: "aluno.view.html",
+      controller: "alunoController",
+      controllerAs: "nCtrl"
+    }
+  )
+  .when("/editaraluno/:alunoid", 
+    {
+      templateUrl: "ealuno.view.html",
+      controller: "alunoController",
+      controllerAs: "nCtrl"
+    }
+  )
   .when("/gerenciarnoticias", 
     {
       templateUrl: "gnoticias.view.html",
@@ -230,7 +244,7 @@ app.controller('galunosController',['$rootScope', '$location', '$http', 'Authent
                    AuthenticationService.treatError(response.data);
                 } else {
                     document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Aluno deletado !</p>";
-                    GeneralService.getAllNoticias();
+                    self.getAllAlunos();
                 }
             }, function(){
                 document.getElementById("response").innerHTML = "<p class='alert-danger alert'>Erro ao tentar conectar banco de dados</p>";            
@@ -409,6 +423,50 @@ app.controller('meusdadosController',['$rootScope','$routeParams', '$location', 
              
                     $interval(function(){                    
                         $location.path("/meusdados");
+                    },2000,1);   
+                }
+            }, function(){
+                document.getElementById("response").innerHTML = "<p class='alert-danger alert'>Erro ao tentar conectar banco de dados</p>";            
+                $("#btEnviar").removeAttr("disabled");
+            });
+        };
+        
+        (function initController() {
+            AuthenticationService.getMenu();  
+            self.getAluno();
+        })();
+        
+}]); 
+
+app.controller('alunoController',['$rootScope','$routeParams', '$location', '$http', '$interval', 'AuthenticationService', 'GeneralService', function($rootScope, $routeParams, $location, $http, $interval, AuthenticationService, GeneralService){
+        this.authS = AuthenticationService;
+        this.generalS = GeneralService;
+        this.aluno;
+        var self = this;
+        
+        this.getAluno = function(){            
+            $http.get('/backend/alunos/'+$routeParams.alunoid).then(function(response){
+               if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+               }
+               self.aluno = response.data;
+            }, function(){
+            });
+        }; 
+        
+        this.enviaAluno = function(){
+            $("#btEnviar").attr("disabled","disabled");
+            $http.put('/backend/alunos/'+self.aluno.id,self.aluno).then(function(response){ 
+                if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+                    $("#btEnviar").removeAttr("disabled");
+                } else {
+
+                    $("#btEnviar").text("Redirecionando...");
+                    document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Dados alterados !</p>";
+             
+                    $interval(function(){                    
+                        $location.path("/aluno/"+self.aluno.id);
                     },2000,1);   
                 }
             }, function(){
