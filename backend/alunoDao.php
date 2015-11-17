@@ -4,7 +4,7 @@ class AlunoDAO {
 
     public static function getAll() {
         $connection = Connection::getConnection();
-        $sql = "SELECT * FROM as_aluno";
+        $sql = "SELECT * FROM as_aluno ORDER BY turma_id, nome";
 
         // recupera todos os categorias
         $result = mysqli_query($connection, $sql);
@@ -24,7 +24,7 @@ class AlunoDAO {
     public static function getAlunoByTurma($turmaId) {
 
         $connection = Connection::getConnection();
-        $sql = "SELECT nome FROM as_aluno WHERE turma_id=$turmaId";
+        $sql = "SELECT nome FROM as_aluno WHERE turma_id=$turmaId ORDER BY nome";
         $result = mysqli_query($connection, $sql);
         $alunos = array();
         while ($aluno = mysqli_fetch_object($result)) {

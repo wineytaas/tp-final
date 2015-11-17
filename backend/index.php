@@ -5,9 +5,11 @@ require 'Slim/Slim.php';
 
 require 'connection.php';
 require 'alunoDao.php';
+require 'atividadeDao.php';
 require 'professorDao.php';
 require 'secretariaDao.php';
 require 'noticiaDao.php';
+
 date_default_timezone_set ("America/Sao_Paulo");
 
 
@@ -342,8 +344,10 @@ $app->put('/alunos/:id', function ($id) {
                     echo json_encode($error); 
                 }
             }
-            $alunof = AlunoDAO::updateAluno($aluno, $alunor->user->id);
-            if(!isset($error))echo json_encode($alunof);
+            if(!isset($error)){
+                $alunof = AlunoDAO::updateAluno($aluno, $alunor->user->id);
+                echo json_encode($alunof);
+            }
         } else {
             $error = new stdClass();
             $error->error = 2;
@@ -351,10 +355,22 @@ $app->put('/alunos/:id', function ($id) {
             echo json_encode($error); 
         }
     } else 
-    if($secretariar){        
-        $aluno = AlunoDAO::updateAluno($aluno, $id);
-
-        echo json_encode($aluno);
+    if($secretariar){       
+        unset($aluno->senha);
+            if(isset($aluno->novaSenha) && isset($aluno->novaSenha2) && !empty($aluno->novaSenha) && !empty($aluno->novaSenha2)){
+                if ($aluno->novaSenha == $aluno->novaSenha2) {
+                    $aluno->senha = md5($aluno->novaSenha);
+                } else {
+                    $error = new stdClass();
+                    $error->error = 2;
+                    $error->description = "As senhas não conferem!";
+                    echo json_encode($error); 
+                }
+            }
+        if(!isset($error)){
+            $aluno = AlunoDAO::updateAluno($aluno, $id);
+             echo json_encode($aluno);
+        }
     } else {
         $error = new stdClass();
         $error->error = 2;
@@ -364,8 +380,26 @@ $app->put('/alunos/:id', function ($id) {
 });
 
 $app->delete('/alunos/:id', function($id) {
+    
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
+    $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
+    
+    if($secretariar){        
+        // recupera todos os clientes
+        $isDeleted = AlunoDAO::deleteAluno($id);
+        $cl = new stdClass();
+        $cl->alunos = $isDeleted;
+        $cl->auth_key = $authorization;
+        echo json_encode($cl);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);        
+    }
+    
     // exclui o cliente
-    $isDeleted = AlunoDAO::deleteAluno($id);
+    
 
     echo json_encode($isDeleted);
 });
@@ -479,7 +513,7 @@ $app->delete('/secretarias/:id', function($id) {
     echo json_encode($isDeleted);
 });
 
-//-------------------------------------  PROPRIEDADES DA SECRETARIA  -------------------------------------
+//-------------------------------------  PROPRIEDADES DA TURMA  -------------------------------------
 
 
 $app->post('/turmas', function() {
@@ -491,6 +525,53 @@ $app->post('/turmas', function() {
     $novaTurma = TurmaDAO::addTurma($novaTurma);
 
     echo json_encode($novaTurma);
+});
+
+
+$app->get('/turmas/:id', function ($id) {
+    //recupera o cliente
+    $turma = TurmaDAO::getTurmaById($id);
+    
+    echo json_encode($turma);
+});
+
+$app->get('/turmas', function () {
+    //recupera o cliente
+    $turma = TurmaDAO::getAll();
+    
+    echo json_encode($turma);
+});
+
+$app->put('/turmas/:id', function ($id) {
+    // recupera o request
+    $request = \Slim\Slim::getInstance()->request();
+
+    // atualiza o aluno
+    $turma = json_decode($request->getBody());
+    $turma = TurmaDAO::updateTurma($turma, $id);
+
+    echo json_encode($turma );
+});
+
+$app->delete('/turmas/:id', function($id) {
+    // exclui o cliente
+    $isDeleted = TurmaDAO::deleteTurma($id);
+
+    echo json_encode($isDeleted);
+});
+
+//-------------------------------------  PROPRIEDADES DA ATIVIDADE  -------------------------------------
+
+
+$app->post('/atividades', function() {
+    // recupera o request
+    $request = \Slim\Slim::getInstance()->request();
+
+    // insere o cliente
+    $novaAtividade = json_decode($request->getBody());
+    $novaAtividade = AtividadeDAO::addAtividade($novaAtividade);
+
+    echo json_encode($novaAtividade);
 });
 
 
