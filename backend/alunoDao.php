@@ -10,8 +10,12 @@ class AlunoDAO {
         $result = mysqli_query($connection, $sql);
         $alunos = array();
         while ($aluno = mysqli_fetch_object($result)) {
-            if ($aluno != null) {
-                $alunos[] = $aluno;
+            if ($aluno != null) {                
+                $ar = new stdClass();
+                $t = TurmaDAO::getTurmaById($aluno->turma_id);
+                $ar->aluno = $aluno;
+                $ar->turma = $t;
+                $alunos[] = $ar;
             }
         }
         return $alunos;
@@ -23,7 +27,6 @@ class AlunoDAO {
         $sql = "SELECT nome FROM as_aluno WHERE turma_id=$turmaId";
         $result = mysqli_query($connection, $sql);
         $alunos = array();
-        
         while ($aluno = mysqli_fetch_object($result)) {
             if ($aluno != null) {
                 $alunos[] = $aluno;
