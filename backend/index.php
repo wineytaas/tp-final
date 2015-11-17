@@ -306,11 +306,25 @@ $app->post('/alunos', function() {
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
 
     if ($secretariar) {
-        // insere o cliente
-        $novoUsuario = json_decode($request->getBody());
-        $novoUsuario = AlunoDAO::addAluno($novoUsuario);
-        echo json_encode($novoUsuario);
+
+        $aluno = json_decode($request->getBody());
+
+        unset($aluno->senha);
+        if (isset($aluno->novaSenha) && isset($aluno->novaSenha2) && !empty($aluno->novaSenha) && !empty($aluno->novaSenha2)) {
+            if ($aluno->novaSenha == $aluno->novaSenha2) {
+                $aluno->senha = md5($aluno->novaSenha);
+                // insere o cliente
+                $novoUsuario = AlunoDAO::addAluno($aluno);
+                echo json_encode($novoUsuario);
+            } else {
+                $error = new stdClass();
+                $error->error = 2;
+                $error->description = "As senhas não conferem!";
+                echo json_encode($error);
+            }
+        }
     } else {
+
         $error = new stdClass();
         $error->error = 2;
         $error->description = "Permissões insuficientes!";
@@ -574,7 +588,7 @@ $app->post('/atividades', function() {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     $professor = ProfessorDAO::checkAuthorizationKey($authorization)->result;
     echo $professor->id;
-    
+
     if ($professor) {
         // recupera o request
         $request = \Slim\Slim::getInstance()->request();

@@ -10,7 +10,7 @@ class AlunoDAO {
         $result = mysqli_query($connection, $sql);
         $alunos = array();
         while ($aluno = mysqli_fetch_object($result)) {
-            if ($aluno != null) {                
+            if ($aluno != null) {
                 $ar = new stdClass();
                 $t = TurmaDAO::getTurmaById($aluno->turma_id);
                 $ar->aluno = $aluno;
@@ -127,12 +127,19 @@ class AlunoDAO {
                 . " VALUES('$aluno->nome' ,'$aluno->rg' ,'$aluno->cpf','$aluno->logradouro' ,'$aluno->numero' ,'$aluno->bairro' ,'$aluno->cidade' ,'$aluno->cep' ,'$aluno->parcelaspagas' ,'$aluno->parcelastotais' ,'$aluno->valortotal','$aluno->login','$aluno->senha','$aluno->turma_id')";
         $result = mysqli_query($connection, $sql);
 
-        $sql = "SELECT * FROM `as_aluno` WHERE nome = '$aluno->nome' AND cpf = '$aluno->cpf' AND rg = '$aluno->rg' ";
-        $result = mysqli_query($connection, $sql);
-        $aluno->id = mysqli_fetch_object($result)->id;
+        if (!$result) {
+            $error = new stdClass();
+            $error->error = 2;
+            $error->description = "Não foi possível adicionar o aluno";
+            return $error;
+        } else {
+            $sql = "SELECT * FROM `as_aluno` WHERE nome = '$aluno->nome' AND cpf = '$aluno->cpf' AND rg = '$aluno->rg' ";
+            $result = mysqli_query($connection, $sql);
+            $aluno->id = mysqli_fetch_object($result)->id;
 
-        $novoAluno = AlunoDAO::getAlunoById($aluno->id);
-        return $novoAluno;
+            $novoAluno = AlunoDAO::getAlunoById($aluno->id);
+            return $novoAluno;
+        }
     }
 
 }
