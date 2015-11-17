@@ -58,6 +58,13 @@ app.config(function($routeProvider) {
       controllerAs: "nCtrl"
     }
   )
+  .when("/editarmeusdados", 
+    {
+      templateUrl: "meusdadose.view.html",
+      controller: "meusdadosController",
+      controllerAs: "nCtrl"
+    }
+  )
   .when("/minhaturma", 
     {
       templateUrl: "minhaturma.view.html",
@@ -357,7 +364,7 @@ app.controller('meusdadosController',['$rootScope','$routeParams', '$location', 
                     document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Dados alterados !</p>";
              
                     $interval(function(){                    
-                        $location.path("/");
+                        $location.path("/meusdados");
                     },2000,1);   
                 }
             }, function(){
@@ -425,3 +432,85 @@ app.run(['$rootScope', '$location', '$cookieStore', '$http', function run($rootS
             }
         });
     }]);
+
+app.filter('cep', function () {
+  return function (input) {
+    var str = input + '';
+    str = str.replace(/\D/g, '');
+    str = str.replace(/^(\d{2})(\d{3})(\d)/, '$1.$2-$3');
+    return str;
+  };
+});
+
+app.filter('cnpj', function () {
+  return function (input) {
+    // regex créditos Matheus Biagini de Lima Dias
+    var str = input + '';
+    str = str.replace(/\D/g, '');
+    str = str.replace(/^(\d{2})(\d)/, '$1.$2');
+    str = str.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+    str = str.replace(/\.(\d{3})(\d)/, '.$1/$2');
+    str = str.replace(/(\d{4})(\d)/, '$1-$2');
+    return str;
+  };
+});
+// Source: dist/.temp/brasil/filters/cpf.js
+app.filter('cpf', function () {
+  return function (input) {
+    var str = input + '';
+    str = str.replace(/\D/g, '');
+    str = str.replace(/(\d{3})(\d)/, '$1.$2');
+    str = str.replace(/(\d{3})(\d)/, '$1.$2');
+    str = str.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    return str;
+  };
+});
+// Source: dist/.temp/brasil/filters/realbrasileiro.js
+function formatReal(int) {
+  var tmp = int + '';
+  var res = tmp.replace('.', '');
+  tmp = res.replace(',', '');
+  var neg = false;
+  if (tmp.indexOf('-') === 0) {
+    neg = true;
+    tmp = tmp.replace('-', '');
+  }
+  if (tmp.length === 1) {
+    tmp = '0' + tmp;
+  }
+  tmp = tmp.replace(/([0-9]{2})$/g, ',$1');
+  if (tmp.length > 6) {
+    tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, '.$1,$2');
+  }
+  if (tmp.length > 9) {
+    tmp = tmp.replace(/([0-9]{3}).([0-9]{3}),([0-9]{2}$)/g, '.$1.$2,$3');
+  }
+  if (tmp.length > 12) {
+    tmp = tmp.replace(/([0-9]{3}).([0-9]{3}).([0-9]{3}),([0-9]{2}$)/g, '.$1.$2.$3,$4');
+  }
+  if (tmp.indexOf('.') === 0) {
+    tmp = tmp.replace('.', '');
+  }
+  if (tmp.indexOf(',') === 0) {
+    tmp = tmp.replace(',', '0,');
+  }
+  return neg ? '-' + tmp : tmp;
+}
+app.filter('realbrasileiro', function () {
+  return function (input) {
+    return 'R$ ' + formatReal(input);
+  };
+});
+// Source: dist/.temp/brasil/filters/tel.js
+app.filter('tel', function () {
+  return function (input) {
+    var str = input + '';
+    str = str.replace(/\D/g, '');
+    if (str.length === 11) {
+      str = str.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+    } else {
+      str = str.replace(/^(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+    }
+    return str;
+  };
+});
