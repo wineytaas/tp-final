@@ -91,6 +91,48 @@
               </div>
             </div>
             <div class="form-group">
+              <label class="col-sm-2 control-label">Turma</label>
+              <div class="col-sm-10">
+                  <select id="inputAccess" class="form-control" ng-model="nCtrl.aluno.turma_id">
+                    <option value="">Selecione uma turma</option>
+                    <option ng-repeat="turma in nCtrl.turmas" value="{{turma.id}}">{{turma.nome}}</option>
+                  </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Parcelas pagas</label>
+              <div class="col-sm-10">
+                  <select id="inputAccess" class="form-control" ng-model="nCtrl.aluno.parcelaspagas">
+                      
+                    <option ng-repeat="n in [nCtrl.aluno.parcelastotais] | makeRange" value="{{n}}">{{n}} ({{((nCtrl.aluno.valortotal/nCtrl.aluno.parcelastotais)*n | number: 2)*100 | realbrasileiro}})</option>
+      
+                  </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Parcelas totais</label>
+              <div class="col-sm-10">
+                  <select id="inputAccess" class="form-control" ng-model="nCtrl.aluno.parcelastotais">
+                    <option value="1">1 x {{(nCtrl.aluno.valortotal/1 | number: 2)*100 | realbrasileiro}}</option>
+                    <option value="2">2 x {{(nCtrl.aluno.valortotal/2 | number: 2)*100 | realbrasileiro}}</option>
+                    <option value="3">3 x {{(nCtrl.aluno.valortotal/3 | number: 2)*100 | realbrasileiro}}</option>
+                    <option value="4">4 x {{(nCtrl.aluno.valortotal/4 | number: 2)*100 | realbrasileiro}}</option>
+                    <option value="5">5 x {{(nCtrl.aluno.valortotal/5 | number: 2)*100 | realbrasileiro}}</option>
+                    <option value="6">6 x {{(nCtrl.aluno.valortotal/6 | number: 2)*100 | realbrasileiro}}</option>
+                  </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="col-sm-2 control-label">Valor total</label>
+              <div class="col-sm-10">
+                  <select id="inputAccess" class="form-control" ng-model="nCtrl.aluno.valortotal">
+                    <option value="600">Normal (R$ 600,00)</option>
+                    <option value="550">Comercial (R$ 550,00)</option>
+                    <option value="500">3a Idade (R$ 500,00)</option>
+                  </select>
+              </div>
+            </div>
+            <div class="form-group">
                 <button type="submit" id="btEnviar" class="btn btn-success"><span class="glyphicon glyphicon-floppy-disk"> Salvar</span></button>
             </div>
         </form>  </div>

@@ -449,7 +449,18 @@ app.controller('alunoController',['$rootScope','$routeParams', '$location', '$ht
         this.authS = AuthenticationService;
         this.generalS = GeneralService;
         this.aluno;
+        this.turmas = [];
         var self = this;
+        
+        this.getTurmas = function(){            
+            $http.get('/backend/turmas').then(function(response){
+               if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+               }
+               self.turmas = response.data.turmas;
+            }, function(){
+            });
+        }; 
         
         this.getAluno = function(){            
             $http.get('/backend/alunos/'+$routeParams.alunoid).then(function(response){
@@ -506,6 +517,7 @@ app.controller('alunoController',['$rootScope','$routeParams', '$location', '$ht
         (function initController() {
             AuthenticationService.getMenu();  
             self.getAluno();
+            self.getTurmas();
         })();
         
 }]); 
@@ -689,3 +701,25 @@ app.filter('tel', function () {
     return str;
   };
 });
+
+app.filter('makeRange', function() {
+        return function(input) {
+            var lowBound, highBound;
+            switch (input.length) {
+            case 1:
+                lowBound = 0;
+                highBound = parseInt(input[0]) - 1;
+                break;
+            case 2:
+                lowBound = parseInt(input[0]);
+                highBound = parseInt(input[1]);
+                break;
+            default:
+                return input;
+            }
+            var result = [];
+            for (var i = lowBound; i <= highBound+1; i++)
+                result.push(i);
+            return result;
+        };
+    });
