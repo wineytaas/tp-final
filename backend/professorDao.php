@@ -22,7 +22,8 @@ class ProfessorDAO {
         $sql = "SELECT * FROM as_professor WHERE id = $id";
         $result = mysqli_query($connection, $sql);
         $professor = mysqli_fetch_object($result);
-
+        unset($professor->login);
+        unset($professor->senha);
         return $professor;
     }
 

@@ -21,7 +21,7 @@ class TurmaDAO {
         $sql = "SELECT * FROM as_turma WHERE id = $id";
         $result = mysqli_query($connection, $sql);
         $turma = mysqli_fetch_object($result);
-
+        $turma->professor = ProfessorDAO::getProfessorById($turma->professor_id);
         return $turma;
     }
 
@@ -33,7 +33,8 @@ class TurmaDAO {
         $result = mysqli_query($connection, $sql);
         $turmas = array();
         while ($turma = mysqli_fetch_object($result)) {
-            if ($turma != null) {
+            if ($turma != null) {                
+                $turma->professor = ProfessorDAO::getProfessorById($turma->professor_id);
                 $turmas[] = $turma;
             }
         }
