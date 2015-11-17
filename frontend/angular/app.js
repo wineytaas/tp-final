@@ -30,6 +30,13 @@ app.config(function($routeProvider) {
       controllerAs: "nCtrl"
     }
   )
+  .when("/turma/:turmaid", 
+    {
+      templateUrl: "turma.view.html",
+      controller: "turmaController",
+      controllerAs: "tCtrl"
+    }
+  )
   .when("/editaraluno/:alunoid", 
     {
       templateUrl: "ealuno.view.html",
@@ -307,6 +314,30 @@ app.controller('minhaturmaController',['$rootScope','$routeParams', '$location',
         
         this.getTurma = function(){            
             $http.get('/backend/alunos').then(function(response){
+               if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+               }
+               self.turma = response.data;
+            }, function(){
+            });
+        };        
+        
+        
+        (function initController() {
+            AuthenticationService.getMenu();   
+            self.getTurma();
+        })();
+        
+}]);
+
+app.controller('turmaController',['$rootScope','$routeParams', '$location', '$http', 'AuthenticationService', 'GeneralService', function($rootScope, $routeParams, $location, $http, AuthenticationService, GeneralService){
+        this.turma;
+        this.authS = AuthenticationService;
+        this.generalS = GeneralService;
+        var self = this;
+        
+        this.getTurma = function(){            
+            $http.get('/backend/turmas/'+$routeParams.turmaid).then(function(response){
                if(response.data.error !== undefined) {
                    AuthenticationService.treatError(response.data);
                }
