@@ -58,6 +58,13 @@ app.config(function($routeProvider) {
       controllerAs: "nCtrl"
     }
   )
+  .when("/minhaturma", 
+    {
+      templateUrl: "minhaturma.view.html",
+      controller: "minhaturmaController",
+      controllerAs: "tCtrl"
+    }
+  )
   .when("/logout", 
     {
       redirectTo: "/login"
@@ -219,6 +226,30 @@ app.controller('noticiaController',['$rootScope','$routeParams', '$location', '$
         })();
         
 }]);    
+
+app.controller('minhaturmaController',['$rootScope','$routeParams', '$location', '$http', 'AuthenticationService', 'GeneralService', function($rootScope, $routeParams, $location, $http, AuthenticationService, GeneralService){
+        this.turma;
+        this.authS = AuthenticationService;
+        this.generalS = GeneralService;
+        var self = this;
+        
+        this.getTurma = function(){            
+            $http.get('/backend/alunos').then(function(response){
+               if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+               }
+               self.turma = response.data;
+            }, function(){
+            });
+        };        
+        
+        
+        (function initController() {
+            AuthenticationService.getMenu();   
+            self.getTurma();
+        })();
+        
+}]);
 
 
 app.controller('novanoticiaController',['$rootScope','$routeParams', '$location', '$http', '$interval', 'AuthenticationService', 'GeneralService', function($rootScope, $routeParams, $location, $http, $interval, AuthenticationService, GeneralService){
