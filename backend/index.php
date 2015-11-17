@@ -10,14 +10,14 @@ require 'professorDao.php';
 require 'secretariaDao.php';
 require 'noticiaDao.php';
 
-date_default_timezone_set ("America/Sao_Paulo");
+date_default_timezone_set("America/Sao_Paulo");
 
 
 $app = new \Slim\Slim();
 $app->response()->header('Content-Type', 'application/json;charset=utf-8');
 
 
-$app->get('/menu', function(){
+$app->get('/menu', function() {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     $answer = new stdClass();
     $menu = array();
@@ -31,7 +31,7 @@ $app->get('/menu', function(){
     $alunor = AlunoDAO::checkAuthorizationKey($authorization)->result;
     $professorr = ProfessorDAO::checkAuthorizationKey($authorization)->result;
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
-    if($alunor){
+    if ($alunor) {
         $optDados = new stdClass();
         $optDados->descricao = "Meus dados";
         $optDados->url = "#/meusdados";
@@ -45,8 +45,8 @@ $app->get('/menu', function(){
         $menu[] = $optTurma;
         $menu[] = $optNotas;
     }
-    
-    if($professorr){
+
+    if ($professorr) {
         $optAtividades = new stdClass();
         $optAtividades->descricao = "Gerenciar atividades";
         $optAtividades->url = "#/gerenciaratividades";
@@ -56,8 +56,8 @@ $app->get('/menu', function(){
         $menu[] = $optAtividades;
         $menu[] = $optTurmas;
     }
-    
-    if($secretariar){        
+
+    if ($secretariar) {
         $optNoticias = new stdClass();
         $optNoticias->descricao = "Gerenciar Notícias";
         $optNoticias->url = "#/gerenciarnoticias";
@@ -90,14 +90,14 @@ $app->get('/menu', function(){
 
 // Noticias
 
-$app->get('/noticias', function(){
+$app->get('/noticias', function() {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     $alunor = AlunoDAO::checkAuthorizationKey($authorization)->result;
     $professorr = ProfessorDAO::checkAuthorizationKey($authorization)->result;
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
     $answer = new stdClass();
     $noticias = NoticiaDAO::getAll();
-    
+
     $answer->auth_key = $authorization;
     $answer->noticias = $noticias;
     if ($alunor || $professorr || $secretariar) {
@@ -110,14 +110,14 @@ $app->get('/noticias', function(){
     }
 });
 
-$app->get('/noticiasa', function(){
+$app->get('/noticiasa', function() {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     $alunor = AlunoDAO::checkAuthorizationKey($authorization)->result;
     $professorr = ProfessorDAO::checkAuthorizationKey($authorization)->result;
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
     $answer = new stdClass();
     $noticias = NoticiaDAO::getAlll();
-    
+
     $answer->auth_key = $authorization;
     $answer->noticias = $noticias;
     if ($alunor || $professorr || $secretariar) {
@@ -131,13 +131,13 @@ $app->get('/noticiasa', function(){
     }
 });
 
-$app->get('/noticias/:id', function($id){
+$app->get('/noticias/:id', function($id) {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     $alunor = AlunoDAO::checkAuthorizationKey($authorization)->result;
     $professorr = ProfessorDAO::checkAuthorizationKey($authorization)->result;
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
     $answer = new stdClass();
-    $noticia = NoticiaDAO::getNoticiaById($id);    
+    $noticia = NoticiaDAO::getNoticiaById($id);
     $answer->auth_key = $authorization;
     $answer->noticia = $noticia;
     if ($alunor || $professorr || $secretariar) {
@@ -154,38 +154,36 @@ $app->post('/noticias', function() {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     // recupera o request
     $request = \Slim\Slim::getInstance()->request();
-    
+
     //recupera o cliente
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization);
-    
-    if($secretariar->result){        
+
+    if ($secretariar->result) {
         // insere o cliente
         $nnoticiaBody = json_decode($request->getBody());
-        if(isset($nnoticiaBody->descricao) && isset($nnoticiaBody->noticia)){            
-            $nnoticia = NoticiaDAO::addNoticia($nnoticiaBody,$secretariar->user->id);
+        if (isset($nnoticiaBody->descricao) && isset($nnoticiaBody->noticia)) {
+            $nnoticia = NoticiaDAO::addNoticia($nnoticiaBody, $secretariar->user->id);
             echo json_encode($nnoticia);
         } else {
             $error = new stdClass();
             $error->error = 2;
             $error->description = "Preencha todos os campos!";
-            echo json_encode($error);              
+            echo json_encode($error);
         }
     } else {
         $error = new stdClass();
         $error->error = 2;
         $error->description = "Permissões insuficientes!";
-        echo json_encode($error);        
+        echo json_encode($error);
     }
-
-    
 });
 
 $app->put('/noticias/:id', function ($id) {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
-    
+
     //recupera o cliente
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
-    if($secretariar){        
+    if ($secretariar) {
         // recupera o request
         $request = \Slim\Slim::getInstance()->request();
 
@@ -205,11 +203,11 @@ $app->put('/noticias/:id', function ($id) {
 
 $app->delete('/noticias/:id', function($id) {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
-    
+
     //recupera o cliente
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization);
-    
-    if($secretariar->result){ 
+
+    if ($secretariar->result) {
         // exclui a noticia
         $isDeleted = NoticiaDAO::deleteNoticia($id);
 
@@ -218,21 +216,24 @@ $app->delete('/noticias/:id', function($id) {
         $error = new stdClass();
         $error->error = 2;
         $error->description = "Permissões insuficientes!";
-        echo json_encode($error);        
+        echo json_encode($error);
     }
 });
 
 // Login
 
 $app->post('/login', function() {
-    
+
     $request = \Slim\Slim::getInstance()->request();
     // recupera todos os clientes
     $user = json_decode($request->getBody());
-    if(isset($user->tipo) && isset($user->login) && isset($user->senha) ){
-        if($user->tipo == "alunos") echo json_encode(AlunoDAO::getAlunoByLogin($user->login,$user->senha));
-        if($user->tipo == "professores") echo json_encode(ProfessorDAO::getProfessorByLogin($user->login,$user->senha));
-        if($user->tipo == "secretarias") echo json_encode(SecretariaDAO::getSecretariaByLogin($user->login,$user->senha));  
+    if (isset($user->tipo) && isset($user->login) && isset($user->senha)) {
+        if ($user->tipo == "alunos")
+            echo json_encode(AlunoDAO::getAlunoByLogin($user->login, $user->senha));
+        if ($user->tipo == "professores")
+            echo json_encode(ProfessorDAO::getProfessorByLogin($user->login, $user->senha));
+        if ($user->tipo == "secretarias")
+            echo json_encode(SecretariaDAO::getSecretariaByLogin($user->login, $user->senha));
     } else {
         $ar = new stdClass();
         $ar->result = false;
@@ -243,28 +244,28 @@ $app->post('/login', function() {
 //-------------------------------------  PROPRIEDADES DO ALUNO  -------------------------------------
 $app->get('/alunos', function() {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
-    
+
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
     $alunor = AlunoDAO::checkAuthorizationKey($authorization);
-    
-    if($secretariar){        
+
+    if ($secretariar) {
         // recupera todos os clientes
         $alunos = AlunoDAO::getAll();
         $cl = new stdClass();
         $cl->alunos = $alunos;
         $cl->auth_key = $authorization;
         echo json_encode($cl);
-    }else if($alunor->result){        
+    } else if ($alunor->result) {
         // recupera todos os clientes
         $alunos = AlunoDAO::getAlunoByTurma($alunor->user->turma_id);
-        
+
         $alunos->auth_key = $authorization;
         echo json_encode($alunos);
     } else {
         $error = new stdClass();
         $error->error = 2;
         $error->description = "Permissões insuficientes!";
-        echo json_encode($error);        
+        echo json_encode($error);
     }
 });
 
@@ -273,17 +274,17 @@ $app->get('/alunos/:id', function ($id) {
     //recupera o cliente
     $alunor = AlunoDAO::checkAuthorizationKey($authorization);
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
-    if($id == 0){
-        if($alunor->result){
+    if ($id == 0) {
+        if ($alunor->result) {
             echo json_encode($alunor->user);
         } else {
             $error = new stdClass();
             $error->error = 2;
             $error->description = "Permissões insuficientes!";
-            echo json_encode($error); 
+            echo json_encode($error);
         }
-    } else 
-    if($secretariar){        
+    } else
+    if ($secretariar) {
         $aluno = AlunoDAO::getAlunoById($id);
 
         echo json_encode($aluno);
@@ -291,7 +292,7 @@ $app->get('/alunos/:id', function ($id) {
         $error = new stdClass();
         $error->error = 2;
         $error->description = "Permissões insuficientes!";
-        echo json_encode($error);        
+        echo json_encode($error);
     }
 });
 
@@ -300,11 +301,11 @@ $app->post('/alunos', function() {
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     // recupera o request
     $request = \Slim\Slim::getInstance()->request();
-    
+
     //recupera o cliente
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
-    
-    if($secretariar){        
+
+    if ($secretariar) {
         // insere o cliente
         $novoUsuario = json_decode($request->getBody());
         $novoUsuario = AlunoDAO::addAluno($novoUsuario);
@@ -313,10 +314,8 @@ $app->post('/alunos', function() {
         $error = new stdClass();
         $error->error = 2;
         $error->description = "Permissões insuficientes!";
-        echo json_encode($error);        
+        echo json_encode($error);
     }
-
-    
 });
 
 $app->put('/alunos/:id', function ($id) {
@@ -329,22 +328,22 @@ $app->put('/alunos/:id', function ($id) {
 
     // atualiza o aluno
     $aluno = json_decode($request->getBody());
-    
-    
-    if($id == 0){
-        if($alunor->result){
+
+
+    if ($id == 0) {
+        if ($alunor->result) {
             unset($aluno->senha);
-            if(isset($aluno->novaSenha) && isset($aluno->novaSenha2) && !empty($aluno->novaSenha) && !empty($aluno->novaSenha2)){
+            if (isset($aluno->novaSenha) && isset($aluno->novaSenha2) && !empty($aluno->novaSenha) && !empty($aluno->novaSenha2)) {
                 if ($aluno->novaSenha == $aluno->novaSenha2) {
                     $aluno->senha = md5($aluno->novaSenha);
                 } else {
                     $error = new stdClass();
                     $error->error = 2;
                     $error->description = "As senhas não conferem!";
-                    echo json_encode($error); 
+                    echo json_encode($error);
                 }
             }
-            if(!isset($error)){
+            if (!isset($error)) {
                 $alunof = AlunoDAO::updateAluno($aluno, $alunor->user->id);
                 echo json_encode($alunof);
             }
@@ -352,39 +351,39 @@ $app->put('/alunos/:id', function ($id) {
             $error = new stdClass();
             $error->error = 2;
             $error->description = "Permissões insuficientes!";
-            echo json_encode($error); 
+            echo json_encode($error);
         }
-    } else 
-    if($secretariar){       
+    } else
+    if ($secretariar) {
         unset($aluno->senha);
-            if(isset($aluno->novaSenha) && isset($aluno->novaSenha2) && !empty($aluno->novaSenha) && !empty($aluno->novaSenha2)){
-                if ($aluno->novaSenha == $aluno->novaSenha2) {
-                    $aluno->senha = md5($aluno->novaSenha);
-                } else {
-                    $error = new stdClass();
-                    $error->error = 2;
-                    $error->description = "As senhas não conferem!";
-                    echo json_encode($error); 
-                }
+        if (isset($aluno->novaSenha) && isset($aluno->novaSenha2) && !empty($aluno->novaSenha) && !empty($aluno->novaSenha2)) {
+            if ($aluno->novaSenha == $aluno->novaSenha2) {
+                $aluno->senha = md5($aluno->novaSenha);
+            } else {
+                $error = new stdClass();
+                $error->error = 2;
+                $error->description = "As senhas não conferem!";
+                echo json_encode($error);
             }
-        if(!isset($error)){
+        }
+        if (!isset($error)) {
             $aluno = AlunoDAO::updateAluno($aluno, $id);
-             echo json_encode($aluno);
+            echo json_encode($aluno);
         }
     } else {
         $error = new stdClass();
         $error->error = 2;
         $error->description = "Permissões insuficientes!";
-        echo json_encode($error);        
+        echo json_encode($error);
     }
 });
 
 $app->delete('/alunos/:id', function($id) {
-    
+
     $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
-    
-    if($secretariar){        
+
+    if ($secretariar) {
         // recupera todos os clientes
         $isDeleted = AlunoDAO::deleteAluno($id);
         $cl = new stdClass();
@@ -395,17 +394,11 @@ $app->delete('/alunos/:id', function($id) {
         $error = new stdClass();
         $error->error = 2;
         $error->description = "Permissões insuficientes!";
-        echo json_encode($error);        
+        echo json_encode($error);
     }
-    
-    // exclui o cliente
-    
-
-    echo json_encode($isDeleted);
 });
 
 //-------------------------------------  PROPRIEDADES DO PROFESSOR  -------------------------------------
-
 //ADD PROFESSOR
 $app->post('/professores', function() {
     // recupera o request
@@ -422,21 +415,21 @@ $app->post('/professores', function() {
 $app->get('/professores/:id', function ($id) {
     //recupera o cliente
     $professor = ProfessorDAO::getProfessorById($id);
-    
+
     echo json_encode($professor);
 });
 
-$app->get('/professores/:login/:senha', function ($login,$senha) {
+$app->get('/professores/:login/:senha', function ($login, $senha) {
     //recupera o cliente
-    $professor = ProfessorDAO::getProfessorByLogin($login,$senha);
-    
+    $professor = ProfessorDAO::getProfessorByLogin($login, $senha);
+
     echo json_encode($professor);
 });
 
 $app->get('/professores', function () {
     //recupera o cliente
     $professor = ProfessorDAO::getAll();
-    
+
     echo json_encode($professor);
 });
 
@@ -448,7 +441,7 @@ $app->put('/professores/:id', function ($id) {
     $professor = json_decode($request->getBody());
     $professor = ProfessorDAO::updateProfessor($professor, $id);
 
-    echo json_encode($professor );
+    echo json_encode($professor);
 });
 
 $app->delete('/professores/:id', function($id) {
@@ -477,21 +470,21 @@ $app->post('/secretarias', function() {
 $app->get('/secretarias/:id', function ($id) {
     //recupera o cliente
     $professor = SecretariaDAO::getSecretariaById($id);
-    
+
     echo json_encode($professor);
 });
 
-$app->get('/secretarias/:login/:senha', function ($login,$senha) {
+$app->get('/secretarias/:login/:senha', function ($login, $senha) {
     //recupera o cliente
-    $secretaria = SecretariaDAO::getSecretariaByLogin($login,$senha);
-    
+    $secretaria = SecretariaDAO::getSecretariaByLogin($login, $senha);
+
     echo json_encode($secretaria);
 });
 
 $app->get('/secretarias', function () {
     //recupera o cliente
     $secretaria = SecretariaDAO::getAll();
-    
+
     echo json_encode($secretaria);
 });
 
@@ -503,7 +496,7 @@ $app->put('/secretarias/:id', function ($id) {
     $secretaria = json_decode($request->getBody());
     $secretaria = SecretariaDAO::updateSecretaria($secretaria, $id);
 
-    echo json_encode($secretaria );
+    echo json_encode($secretaria);
 });
 
 $app->delete('/secretarias/:id', function($id) {
@@ -531,15 +524,28 @@ $app->post('/turmas', function() {
 $app->get('/turmas/:id', function ($id) {
     //recupera o cliente
     $turma = TurmaDAO::getTurmaById($id);
-    
+
     echo json_encode($turma);
 });
 
 $app->get('/turmas', function () {
-    //recupera o cliente
-    $turma = TurmaDAO::getAll();
-    
-    echo json_encode($turma);
+
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
+    $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
+
+    if ($secretariar) {
+        //recupera o cliente
+        $turmas = TurmaDAO::getAll();
+        $cl = new stdClass();
+        $cl->turmas = $turmas;
+        $cl->auth_key = $authorization;
+        echo json_encode($cl);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);
+    }
 });
 
 $app->put('/turmas/:id', function ($id) {
@@ -550,7 +556,7 @@ $app->put('/turmas/:id', function ($id) {
     $turma = json_decode($request->getBody());
     $turma = TurmaDAO::updateTurma($turma, $id);
 
-    echo json_encode($turma );
+    echo json_encode($turma);
 });
 
 $app->delete('/turmas/:id', function($id) {
@@ -564,45 +570,59 @@ $app->delete('/turmas/:id', function($id) {
 
 
 $app->post('/atividades', function() {
-    // recupera o request
-    $request = \Slim\Slim::getInstance()->request();
 
-    // insere o cliente
-    $novaAtividade = json_decode($request->getBody());
-    $novaAtividade = AtividadeDAO::addAtividade($novaAtividade);
-
-    echo json_encode($novaAtividade);
-});
-
-
-$app->get('/turmas/:id', function ($id) {
-    //recupera o cliente
-    $turma = TurmaDAO::getTurmaById($id);
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
+    $professor = ProfessorDAO::checkAuthorizationKey($authorization)->result;
+    echo $professor->id;
     
-    echo json_encode($turma);
+    if ($professor) {
+        // recupera o request
+        $request = \Slim\Slim::getInstance()->request();
+
+        // insere o cliente
+        $novaAtividade = json_decode($request->getBody());
+        $novaAtividade = AtividadeDAO::addAtividade($novaAtividade);
+
+        $cl = new stdClass();
+        $cl->atividade = $novaAtividade;
+        $cl->auth_key = $authorization;
+        echo json_encode($cl);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);
+    }
 });
 
-$app->get('/turmas', function () {
+
+$app->get('/atividades/:id', function ($id) {
     //recupera o cliente
-    $turma = TurmaDAO::getAll();
-    
-    echo json_encode($turma);
+    $atividade = AtividadeDAO::getAtividadeById($id);
+
+    echo json_encode($atividade);
 });
 
-$app->put('/turmas/:id', function ($id) {
+$app->get('/atividades', function () {
+    //recupera o cliente
+    $atividades = AtividadeDAO::getAll();
+    echo json_encode($atividades);
+});
+
+$app->put('/atividades/:id', function ($id) {
     // recupera o request
     $request = \Slim\Slim::getInstance()->request();
 
     // atualiza o aluno
-    $turma = json_decode($request->getBody());
-    $turma = TurmaDAO::updateTurma($turma, $id);
+    $atividade = json_decode($request->getBody());
+    $atividade = AtividadeDAO::updateAtividade($atividade, $id);
 
-    echo json_encode($turma );
+    echo json_encode($atividade);
 });
 
-$app->delete('/turmas/:id', function($id) {
+$app->delete('/atividades/:id', function($id) {
     // exclui o cliente
-    $isDeleted = TurmaDAO::deleteTurma($id);
+    $isDeleted = AtividadeDAO::deleteAtividade($id);
 
     echo json_encode($isDeleted);
 });
