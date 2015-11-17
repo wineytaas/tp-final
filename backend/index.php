@@ -618,26 +618,76 @@ $app->get('/atividades/:id', function ($id) {
 });
 
 $app->get('/atividades', function () {
-    //recupera o cliente
-    $atividades = AtividadeDAO::getAll();
-    echo json_encode($atividades);
+
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
+
+    $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
+    $alunor = AlunoDAO::checkAuthorizationKey($authorization);
+
+    if ($secretariar) {
+        // recupera todos os clientes
+        $alunos = AtividadeDAO::getAll();
+        $alunos->auth_key = $authorization;
+        echo json_encode($alunos);
+        
+    } else if ($alunor->result) {
+        // recupera todos os clientes
+        $atividade = AtividadeDAO::getAtividadeByTurmaId($alunor->user->turma_id);
+        $atividade->auth_key = $authorization;
+        echo json_encode($atividade);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);
+    }
 });
 
 $app->put('/atividades/:id', function ($id) {
-    // recupera o request
-    $request = \Slim\Slim::getInstance()->request();
 
-    // atualiza o aluno
-    $atividade = json_decode($request->getBody());
-    $atividade = AtividadeDAO::updateAtividade($atividade, $id);
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
+    $professor = ProfessorDAO::checkAuthorizationKey($authorization)->result;
+    if ($professor) {
+        // recupera o request
+        $request = \Slim\Slim::getInstance()->request();
 
-    echo json_encode($atividade);
+        // atualiza o aluno
+        $atividade = json_decode($request->getBody());
+        $novaAtividade = AtividadeDAO::updateAtividade($atividade, $id);
+        
+        $novaAtividade->auth_key = $authorization;
+        echo json_encode($novaAtividade);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);
+    }
 });
 
 $app->delete('/atividades/:id', function($id) {
+    
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
+    $professor = ProfessorDAO::checkAuthorizationKey($authorization)->result;
+    if ($professor) {
+        // recupera o request
+        $request = \Slim\Slim::getInstance()->request();
+
+        // deleta atividade
+        $isDeleted = AtividadeDAO::deleteAtividade($id);
+        
+        $isDeleted->auth_key = $authorization;
+        echo json_encode($isDeleted);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);
+    }
+    
     // exclui o cliente
     $isDeleted = AtividadeDAO::deleteAtividade($id);
 
-    echo json_encode($isDeleted);
+    
 });
 $app->run();
