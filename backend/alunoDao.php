@@ -97,7 +97,8 @@ class AlunoDAO {
 
     public static function updateAlunoCompleto($aluno, $id) {
         $connection = Connection::getConnection();
-        $sql = "UPDATE as_aluno SET turma_id='$aluno->turma_id', nome='$aluno->nome' ,rg='$aluno->rg' ,cpf='$aluno->cpf' ,logradouro='$aluno->logradouro' ,numero='$aluno->numero' ,bairro='$aluno->bairro' ,cidade='$aluno->cidade' ,cep='$aluno->cep' ,parcelaspagas='$aluno->parcelaspagas' ,parcelastotais='$aluno->parcelastotais' ,valortotal='$aluno->valortotal',login='$aluno->login',senha='$aluno->senha' WHERE id = $id";
+        if (isset($aluno->senha)) $sql = "UPDATE as_aluno SET turma_id='$aluno->turma_id', nome='$aluno->nome' ,rg='$aluno->rg' ,cpf='$aluno->cpf' ,logradouro='$aluno->logradouro' ,numero='$aluno->numero' ,bairro='$aluno->bairro' ,cidade='$aluno->cidade' ,cep='$aluno->cep' ,parcelaspagas='$aluno->parcelaspagas' ,parcelastotais='$aluno->parcelastotais' ,valortotal='$aluno->valortotal',login='$aluno->login',senha='$aluno->senha' WHERE id = $id";
+        if (!isset($aluno->senha)) $sql = "UPDATE as_aluno SET turma_id='$aluno->turma_id', nome='$aluno->nome' ,rg='$aluno->rg' ,cpf='$aluno->cpf' ,logradouro='$aluno->logradouro' ,numero='$aluno->numero' ,bairro='$aluno->bairro' ,cidade='$aluno->cidade' ,cep='$aluno->cep' ,parcelaspagas='$aluno->parcelaspagas' ,parcelastotais='$aluno->parcelastotais' ,valortotal='$aluno->valortotal',login='$aluno->login' WHERE id = $id";
         $result = mysqli_query($connection, $sql);
 
         $alunoAtualizado = AlunoDAO::getAlunoById($id);

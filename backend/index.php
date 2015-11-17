@@ -9,6 +9,7 @@ require 'atividadeDao.php';
 require 'professorDao.php';
 require 'secretariaDao.php';
 require 'noticiaDao.php';
+require 'turmaDao.php';
 
 date_default_timezone_set("America/Sao_Paulo");
 
