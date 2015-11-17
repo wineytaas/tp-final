@@ -63,7 +63,7 @@ class AlunoDAO {
         $result = mysqli_query($connection, $sql);
         $aluno = mysqli_fetch_object($result);
         unset($aluno->senha);
-
+        $aluno->turma = TurmaDAO::getTurmaById($aluno->turma_id);
         return $aluno;
     }
 
