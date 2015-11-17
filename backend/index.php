@@ -536,10 +536,21 @@ $app->post('/turmas', function() {
 
 
 $app->get('/turmas/:id', function ($id) {
+    $authorization = \Slim\Slim::getInstance()->request->headers->get("Authorization");
     //recupera o cliente
-    $turma = TurmaDAO::getTurmaById($id);
+    $alunor = AlunoDAO::checkAuthorizationKey($authorization);
+    $secretariar = SecretariaDAO::checkAuthorizationKey($authorization)->result;
+    if ($secretariar) {
+        //recupera o cliente
+        $turma = TurmaDAO::getTurmaById($id);
 
-    echo json_encode($turma);
+        echo json_encode($turma);
+    } else {
+        $error = new stdClass();
+        $error->error = 2;
+        $error->description = "Permissões insuficientes!";
+        echo json_encode($error);
+    }
 });
 
 $app->get('/turmas', function () {
