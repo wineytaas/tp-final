@@ -51,6 +51,13 @@ app.config(function($routeProvider) {
       controllerAs: "gnCtrl"
     }
   )
+  .when("/matricularaluno", 
+    {
+      templateUrl: "maluno.view.html",
+      controller: "malunoController",
+      controllerAs: "nCtrl"
+    }
+  )
   .when("/noticias", 
     {
       templateUrl: "noticias.view.html",
@@ -454,6 +461,27 @@ app.controller('alunoController',['$rootScope','$routeParams', '$location', '$ht
             });
         }; 
         
+        this.matriculaAluno = function(){
+            $("#btEnviar").attr("disabled","disabled");
+            $http.post('/backend/alunos',self.aluno).then(function(response){ 
+                if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+                    $("#btEnviar").removeAttr("disabled");
+                } else {
+
+                    $("#btEnviar").text("Redirecionando...");
+                    document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Aluno matriculado!</p>";
+             
+                    $interval(function(){                    
+                        $location.path("/aluno/"+self.aluno.id);
+                    },2000,1);   
+                }
+            }, function(){
+                document.getElementById("response").innerHTML = "<p class='alert-danger alert'>Erro ao tentar conectar banco de dados</p>";            
+                $("#btEnviar").removeAttr("disabled");
+            });
+        };
+        
         this.enviaAluno = function(){
             $("#btEnviar").attr("disabled","disabled");
             $http.put('/backend/alunos/'+self.aluno.id,self.aluno).then(function(response){ 
@@ -478,6 +506,51 @@ app.controller('alunoController',['$rootScope','$routeParams', '$location', '$ht
         (function initController() {
             AuthenticationService.getMenu();  
             self.getAluno();
+        })();
+        
+}]); 
+
+app.controller('malunoController',['$rootScope','$routeParams', '$location', '$http', '$interval', 'AuthenticationService', 'GeneralService', function($rootScope, $routeParams, $location, $http, $interval, AuthenticationService, GeneralService){
+        this.authS = AuthenticationService;
+        this.generalS = GeneralService;
+        this.turmas = [];
+        var self = this;
+        
+        this.getTurmas = function(){            
+            $http.get('/backend/turmas').then(function(response){
+               if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+               }
+               self.turmas = response.data.turmas;
+            }, function(){
+            });
+        }; 
+        
+        this.matriculaAluno = function(aluno){
+            $("#btEnviar").attr("disabled","disabled");
+            $http.post('/backend/alunos',aluno).then(function(response){ 
+                if(response.data.error !== undefined) {
+                   AuthenticationService.treatError(response.data);
+                    $("#btEnviar").removeAttr("disabled");
+                } else {
+
+                    $("#btEnviar").text("Redirecionando...");
+                    document.getElementById("response").innerHTML = "<p class='alert alert-success box'>Aluno matriculado!</p>";
+             
+                    $interval(function(){                    
+                        $location.path("/gerenciaralunos");
+                    },2000,1);   
+                }
+            }, function(){
+                document.getElementById("response").innerHTML = "<p class='alert-danger alert'>Erro ao tentar conectar banco de dados</p>";            
+                $("#btEnviar").removeAttr("disabled");
+            });
+        };
+        
+        (function initController() {
+            AuthenticationService.getMenu();
+            self.getTurmas();
+            //self.aluno.valortotal = 600;
         })();
         
 }]); 
