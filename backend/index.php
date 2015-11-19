@@ -259,7 +259,7 @@ $app->get('/alunos', function() {
     } else if ($alunor->result) {
         // recupera todos os clientes
         $alunos = AlunoDAO::getAlunoByTurma($alunor->user->turma_id);
-
+        $alunos->turma->professor = ProfessorDAO::getProfessorById($alunos->turma->professor_id);
         $alunos->auth_key = $authorization;
         echo json_encode($alunos);
     } else {

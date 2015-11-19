@@ -31,7 +31,7 @@ class NoticiaDAO {
 
     public static function getAll() {
         $connection = Connection::getConnection();
-        $sql = "SELECT as_noticia.id,descricao,DATE_FORMAT(data, '%d/%m') as data,noticia,as_secretaria.nome as autor FROM as_noticia JOIN as_secretaria ON as_noticia.secretaria_id = as_secretaria.id GROUP BY as_noticia.id ORDER BY as_noticia.data LIMIT 6";
+        $sql = "SELECT as_noticia.id,descricao,DATE_FORMAT(data, '%d/%m') as data,noticia,as_secretaria.nome as autor FROM as_noticia JOIN as_secretaria ON as_noticia.secretaria_id = as_secretaria.id GROUP BY as_noticia.id ORDER BY as_noticia.data DESC LIMIT 6";
 
         // recupera todos os categorias
         $result = mysqli_query($connection, $sql);
